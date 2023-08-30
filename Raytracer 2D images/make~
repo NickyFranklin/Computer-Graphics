@@ -1,0 +1,8 @@
+FLAGS="-g -Wall -Wextra -std=c99"
+
+ray1: main.c
+      gcc ${FLAGS} -o ray1
+
+.PHONY: clean
+clean:
+	rm -f ray1
