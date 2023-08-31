@@ -2,10 +2,11 @@
 #include "stb_image_write.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 //The coordinate functions only work with 512 pixels. Will add another parameter to the
 //function later to allow any resolution
-
+//As is self explanatory, they give me the coordinates of a pixel given a value
 long yCoord(int pixel) {
   pixel = pixel/3;
   return pixel / 512;
@@ -85,29 +86,39 @@ int main(int argc, char *argv[]) {
 	if(i % 3 == 0) {
 	  pixelArray[i] = 255;
 	}
-	else {
+	else if(i % 3 == 1) {
+	  pixelArray[i] = 0;
+	}
+	else if(i % 3 == 2) {
 	  pixelArray[i] = 0;
 	}
       }
     
       //else it should be blue
       else {
-	if(i % 3 == 2) {
-	  pixelArray[i] = 255;
-	}
-	else {
+	if(i % 3 == 0) {
 	  pixelArray[i] = 0;
+	}
+	else if(i % 3 == 1) {
+	  pixelArray[i] = 0;
+	}
+	else if (i % 3 == 2) {
+	  pixelArray[i] = 255;
 	}
       }
     }
 
+    //If the first if statement fails, reverse the pattern
     else {
       if(pixelX % 128 < 64) {
-	if(i % 3 == 2) {
-	  pixelArray[i] = 255; 
+	if(i % 3 == 0) {
+	  pixelArray[i] = 0; 
 	}
-	else {
+	else if(i % 3 == 1) {
 	  pixelArray[i] = 0;
+	}
+	else if(i % 3 == 2) {
+	  pixelArray[i] = 255;
 	}
       }
 
@@ -115,35 +126,47 @@ int main(int argc, char *argv[]) {
 	if(i % 3 == 0) {
 	  pixelArray[i] = 255;
 	}
-	else {
+	else if(i % 3 == 1) {
+	  pixelArray[i] = 0;
+	}
+	else if(i % 3 == 2) {
 	  pixelArray[i] = 0;
 	}
       }
       
     }
     
-      /*
-    if(pixel % 128 < 64) {
-      if(i % 3 == 0) {
-	pixelArray[i] = 255;
-      }
-      else {
-	pixelArray[i] = 0;
-      }
-    }
-    else {
-      if(i % 3 == 2) {
-	pixelArray[i] = 255;
-      }
-      else {
-	pixelArray[i] = 0;
-      }
-    }
-      */
   }
 
   stbi_write_png("checkerboard.png", 512, 512, 3, pixelArray, 512*3);
-  
+  fclose(checkerBoard);
+  //This is the gradient Code
+  float fpixelX;
+  float fpixelY;
+  for(int i = 0; i < assignmentSize; i++) {
+    fpixelX = (float) xCoord(i);
+    fpixelY = (float) yCoord(i);
+
+    
+    if(i % 3 == 0) {
+      //pixel number / pixel total * color code
+      pixelArray[i] = round((fpixelX / 511) * 255);
+    }
+
+    else if(i % 3 == 1) {
+      pixelArray[i] = round((fpixelY / 511) * 255);
+    }
+
+    else if(i % 3 == 2) {
+      pixelArray[i] = 128;
+    }
+    
+  }
+
+  FILE *gradient;
+  gradient = fopen("gradient.png" , "w");
+  stbi_write_png("gradient.png", 512, 512, 3, pixelArray, 512*3);
+  fclose(gradient);
   free(pixelArray);
   return 0;
 }
