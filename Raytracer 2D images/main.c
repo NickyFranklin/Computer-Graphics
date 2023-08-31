@@ -3,6 +3,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+//The coordinate functions only work with 512 pixels. Will add another parameter to the
+//function later to allow any resolution
+
+long yCoord(int pixel) {
+  pixel = pixel/3;
+  return pixel / 512;
+}
+
+long xCoord(int pixel) {
+  pixel = pixel/3;
+  return pixel % 512;
+}
+
 int main(int argc, char *argv[]) {
   //We will need width and length for the window
   int width;
@@ -58,6 +71,78 @@ int main(int argc, char *argv[]) {
   
   fclose(fp);
 
+  FILE *checkerBoard;
+  checkerBoard = fopen("checkboard.png", "w");
+  int assignmentSize = 512 * 512 * 3;
+  long pixelX;
+  long pixelY;
+  for(int i = 0; i < assignmentSize; i++) {
+    pixelX = xCoord(i);
+    pixelY = yCoord(i);
+    //If it fits these parameters, then it should be red
+    if(pixelY % 128 < 64) {
+      if(pixelX % 128 < 64) {
+	if(i % 3 == 0) {
+	  pixelArray[i] = 255;
+	}
+	else {
+	  pixelArray[i] = 0;
+	}
+      }
+    
+      //else it should be blue
+      else {
+	if(i % 3 == 2) {
+	  pixelArray[i] = 255;
+	}
+	else {
+	  pixelArray[i] = 0;
+	}
+      }
+    }
+
+    else {
+      if(pixelX % 128 < 64) {
+	if(i % 3 == 2) {
+	  pixelArray[i] = 255; 
+	}
+	else {
+	  pixelArray[i] = 0;
+	}
+      }
+
+      else {
+	if(i % 3 == 0) {
+	  pixelArray[i] = 255;
+	}
+	else {
+	  pixelArray[i] = 0;
+	}
+      }
+      
+    }
+    
+      /*
+    if(pixel % 128 < 64) {
+      if(i % 3 == 0) {
+	pixelArray[i] = 255;
+      }
+      else {
+	pixelArray[i] = 0;
+      }
+    }
+    else {
+      if(i % 3 == 2) {
+	pixelArray[i] = 255;
+      }
+      else {
+	pixelArray[i] = 0;
+      }
+    }
+      */
+  }
+
+  stbi_write_png("checkerboard.png", 512, 512, 3, pixelArray, 512*3);
   
   free(pixelArray);
   return 0;
