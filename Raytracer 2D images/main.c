@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
   }
 
   //If one number is specified, then that is the length and width
-  else if(argc = 2) {
+  else if(argc == 2) {
     length = atoi(argv[1]);
     width = atoi(argv[1]);
   }
@@ -33,12 +33,20 @@ int main(int argc, char *argv[]) {
 
   //Set up array
   for(int i = 0; i < size; i++) {
-    if(i == 0 || i == 1 || i == 2) {
-      pixelArray[i] = 0;
-    }
+    switch(i % 3) {
 
-    else {
+    case 0 :
       pixelArray[i] = 255;
+      break;
+      
+    case 1:
+      pixelArray[i] = 105;
+      break;
+      
+    case 2:
+      pixelArray[i] = 180;
+      break;
+      
     }
   }
   
