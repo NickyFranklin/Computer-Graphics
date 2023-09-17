@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
-
+//These structs are to help simplify working later
 typedef struct {
   float pos[3];
   float dir[3];
@@ -19,10 +19,12 @@ typedef struct {
   float radius;
 } Sphere;
 
+
 float dotProduct(float x1, float y1, float z1, float x2, float y2, float z2) {
   return (x1 * x2) + (y1 * y2) + (z1 * z2);
 }
 
+//Subtracts vectors from eachother
 void subVector(float x1, float y1, float z1, float x2, float y2, float z2, float* resultX,
 		float* resultY, float* resultZ) {
   *resultX = x1 - x2;
@@ -47,35 +49,47 @@ void ThreeDto2D (float* x, float* y, float* z, float* pixelX, float* pixelY) {
   *pixelY = (512 - (((*y/2) * scaling) *  512 + 256));
 }
 
+//This determines the T value for the sphere intersection
 float Sphere_intersectT(Ray ray, Sphere sphere) {
+  //This calculates (e-c) in the sphere equation
   float centerX;
   float centerY;
   float centerZ;
   subVector(ray.pos[0], ray.pos[1], ray.pos[2], sphere.pos[0], sphere.pos[1], sphere.pos[2], &centerX,
 	    &centerY, &centerZ);
   float discriminant;
+  //This calculates ((d * (e-c))^2)
   float rayDirCentSquare = dotProduct(ray.dir[0], ray.dir[1], ray.dir[2], centerX, centerY, centerZ);
   rayDirCentSquare = rayDirCentSquare * rayDirCentSquare;
+  //This calculates d*d
   float dirSquare = dotProduct(ray.dir[0], ray.dir[1], ray.dir[2], ray.dir[0], ray.dir[1], ray.dir[2]);
+  //This calculates R^2
   float radiusSquare = sphere.radius * sphere.radius;
+  //This calculates ((e-c)*(e-c) - R^2)
   float centerSquareRad = dotProduct(centerX, centerY, centerZ, centerX, centerY, centerZ);
   centerSquareRad = centerSquareRad - radiusSquare;
+  //Calculates if the stuff under the square root sign will be over 0 or not
+  //If it isnt, it just returns -1
   discriminant = (rayDirCentSquare) - (dirSquare * centerSquareRad);
   if(discriminant <= 0) {
     return -1;
   }
 
   discriminant = sqrt(discriminant);
+  //Calculates the rest of the equation
   float outer = dotProduct(-1 * ray.dir[0], -1 * ray.dir[1], -1 * ray.dir[2],
 			   centerX, centerY, centerZ);
+  //Calculates both sides of the intersection
   float t = (outer - discriminant) / dirSquare;
   float otherT = (outer - discriminant) / dirSquare;
+  //Whichever side is closer gets returned
   if(otherT < t && otherT > 0) {
     t = otherT;
   }
   return t;
 }
 
+//this is never used lol
 void getPixelIntersect(float t, float x, float y, float z, float* pixelX, float* pixelY) {
   x = x * t;
   y = y * t;
