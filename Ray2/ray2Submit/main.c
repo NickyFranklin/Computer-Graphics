@@ -286,6 +286,8 @@ int main(int argc, char *argv[]) {
   fp = fopen("sphere.png", "w");
   stbi_write_png("sphere.png", 512, 512, 3, pixelArr, 512*3);
   fclose(fp);
+  free(pixelArr);
+  free(rayArr);
   return 0;
 }
 
