@@ -92,6 +92,7 @@ RayHit Sphere_intersectT(Ray ray, Sphere sphere) {
 	    &centerY, &centerZ);
 
   float discriminant;
+
   //This calculates ((d * (e-c))^2)
   float rayDirCentSquare = dotProduct(ray.dir[0], ray.dir[1], ray.dir[2], centerX, centerY, centerZ);
   rayDirCentSquare = rayDirCentSquare * rayDirCentSquare;
@@ -216,9 +217,9 @@ int main(int argc, char *argv[]) {
       sphereArr[i].pos[1] = 0;
       sphereArr[i].pos[2] = -16;
       sphereArr[i].radius = 2;
-      sphereArr[i].material.color[0] = 1;
+      sphereArr[i].material.color[0] = 0;
       sphereArr[i].material.color[1] = 1;
-      sphereArr[i].material.color[2] = 1;
+      sphereArr[i].material.color[2] = 0;
       sphereArr[i].material.reflective = 0;
     }
     
@@ -245,7 +246,7 @@ int main(int argc, char *argv[]) {
     }
     
   }
-  RayHit rayHitArr[sphereArrSize];
+  RayHit rayHitArr[3];
   
   
   for(int y = 0; y < length; y++) {
@@ -257,33 +258,47 @@ int main(int argc, char *argv[]) {
       TwoDto3D(&rayArr[i].dir[0], &rayArr[i].dir[1], &rayArr[i].dir[2], &pixelX, &pixelY);
       normalize(&rayArr[i].dir[0], &rayArr[i].dir[1], &rayArr[i].dir[2]);
       if(x == 0 && y == 511) {
-	printf("Bottom left pixel\n");
-	printRay(rayArr[i]);
+	//printf("Bottom left pixel\n");
+	//printRay(rayArr[i]);
       }
       if(x == 511 && y == 0) {
-	printf("Top right pixel\n");
-	printRay(rayArr[i]);
+	//printf("Top right pixel\n");
+	//printRay(rayArr[i]);
       }
       if(x == 255 && y == 257) {
-	printf("Middle pixel\n");
-	printRay(rayArr[i]);
+	//printf("Middle pixel\n");
+	//printRay(rayArr[i]);
       }
 
+      int max = 0;
+      RayHit realRay;
+      
       for(int j = 0; j < sphereArrSize; j++) {
 	rayHitArr[j] = Sphere_intersectT(rayArr[i], sphereArr[j]);
       }
 
-      RayHit realRay = rayHitArr[0];
-      //Determine how to determine sphere to look at
-      printf();
+      //realRay = rayHitArr[0];
       
+      float t = -1;
       for(int j = 0; j < sphereArrSize; j++) {
-	if(rayHitArr[j].t > 0 && rayHitArr[j].t < realRay.t) {
-	  realRay = rayHitArr[j];
+	if(rayHitArr[j].t > t && t < 0) {
+	  t = rayHitArr[j].t;
+	  max = j;
+	  printf("%d\n", max);
 	}
+
+	else if(t > 0 && rayHitArr[j].t > 0 && rayHitArr[j].t < t) {
+	  t = rayHitArr[j].t;
+	  max = j;
+	}
+	
       }
+      realRay = rayHitArr[max];
+
       
-      if(realRay.t > 0) {
+
+      
+      if(t > 0) {
 	//If T hit the object, we want to calculate the intersection point with Ray direction * t
 	//We can do this by getting the intersection point, the sphere center, and subtracting them
 	//and then normalizing them
@@ -309,7 +324,7 @@ int main(int argc, char *argv[]) {
 		    &rayToIntersect.dir[0], &rayToIntersect.dir[1], &rayToIntersect.dir[2]);
 	  normalize(&rayToIntersect.dir[0], &rayToIntersect.dir[1], &rayToIntersect.dir[2]);
 	  */
-
+	  
 	  //subvector is x1 - x2
 	  subVector(lightPos[0], lightPos[1], lightPos[2],
 		    rayToLight.pos[0], rayToLight.pos[1], rayToLight.pos[2],
