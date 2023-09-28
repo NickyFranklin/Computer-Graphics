@@ -1,0 +1,7 @@
+FLAGS= -g -Wall -Wextra -std=gnu99
+
+ray3: main.o
+	gcc ${FLAGS} -fPIE -o ray3 main.o -lm
+main.o: main.c
+clean:
+	rm -f ray3
