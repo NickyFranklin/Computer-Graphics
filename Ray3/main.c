@@ -508,12 +508,67 @@ int main(int argc, char *argv[]) {
 	  pixelArr[i].b = realRay.material.color[2] * diffuse * 255;
 	}
       }
+
+      else if(realRay.material.reflective > 0) {
+	Ray reflection = rayArr[i];
+	for(int j = 0; j < 10; j++) {
+	  //d is our ray's direction, n is the surface normal of the object
+	  // we have both of these already
+	  normalize(&reflection.dir[0], &reflection.dir[1], &reflection.dir[2]);
+	  normalize(&realRay.surfaceNorm[0], &realRay.surfaceNorm[1], &realRay.surfaceNorm[2]);
+	  float dotProd = dotProduct(reflection.dir[0], reflection.dir[1], reflection.dir[2],
+       			     realRay.surfaceNorm[0], realRay.surfaceNorm[1], realRay.surfaceNorm[2]);
+	  for(int k = 0; k < 3; k++) {
+	    reflection.pos[k] = realRay.pos[k];
+	    reflection.dir[k] = reflection.dir[k] + -2 *
+	      (dotProd ) * realRay.surfaceNorm[k];
+	  }
+
+	  for(int k = 0; k < sphereArrSize + triangleArrSize; k++) {
+	    if(k < sphereArrSize) {
+	      rayHitArr[k] = Sphere_intersectT(reflection, sphereArr[k]);
+	    }
+	    
+	    else {
+	      rayHitArr[k] = TriangleIntersection(reflection, triangleArr[k-sphereArrSize]);
+	    }
+	  }
+
+	  t = -1;
+	  for(int k = 0; k < sphereArrSize + triangleArrSize; k++) {
+	    
+	    if(rayHitArr[k].t > t && t < 0) {
+	      k = rayHitArr[k].t;
+	      max = k;
+	      //printf("%d\n", max);
+	    }
+	    
+	    else if(t > 0 && rayHitArr[k].t > 0 && rayHitArr[k].t < t) {
+	      t = rayHitArr[k].t;
+	      max = j;
+	    }
+	
+	  }
+	  realRay = rayHitArr[max];
+	  
+	  
+	  
+	}
+	pixelArr[i].r = realRay.material.color[0] * diffuse * 255;
+	pixelArr[i].g = realRay.material.color[1] * diffuse * 255;
+	pixelArr[i].b = realRay.material.color[2] * diffuse * 255;
+      }
+
       else {
 	pixelArr[i].r = 0;
 	pixelArr[i].g = 0;
 	pixelArr[i].b = 0;
       }
     }
+    
+
+
+    
   }
 
   FILE *fp;
