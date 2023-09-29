@@ -20,6 +20,11 @@ typedef struct {
 } Material;
 
 typedef struct {
+  float v[3][3];
+  Material material;
+} Triangle;
+
+typedef struct {
   float t;
   Material material;
   float pos[3];
@@ -137,6 +142,58 @@ RayHit Sphere_intersectT(Ray ray, Sphere sphere) {
 	    &rayHit.surfaceNorm[0], &rayHit.surfaceNorm[1], &rayHit.surfaceNorm[2]);
   normalize(&rayHit.surfaceNorm[0], &rayHit.surfaceNorm[1], &rayHit.surfaceNorm[2]);
   
+  
+  return rayHit;
+}
+
+RayHit TriangleIntersection(Ray ray, Triangle triangle) {
+  //This first section is going to be just declaring variables for the triangle intersection code
+  RayHit rayHit;
+  float x1 = triangle.v[0][0];
+  float x2 = triangle.v[1][0];
+  float x3 = triangle.v[2][0];
+  float y1 = triangle.v[0][1];
+  float y2 = triangle.v[1][1];
+  float y3 = triangle.v[2][1];
+  float z1 = triangle.v[0][2];
+  float z2 = triangle.v[1][2];
+  float z3 = triangle.v[2][2];
+  float A = x1 - x2;
+  float B = y1 - y2;
+  float C = z1 - z2;
+  float D = x1 - x3;
+  float E = y1 - y3;
+  float F = z1 - z3;
+  float G = ray.dir[0];
+  float H = ray.dir[1];
+  float I = ray.dir[2];
+  float J = x1 - ray.pos[0];
+  float K = y1 - ray.pos[1];
+  float L = z1 - ray.pos[2];
+  float M = A*(E*I - H*F) + B*(G*F - D*I) + C*(D*H - E*G);
+  float beta = (J*(E*I - H*F) + K*(G*F - D*I) + L(D*H - E*G)) / M;
+  float gamma = (I*(A*K - J*B) + H*(J*C - A*L) + G(B*L - K*C)) / M;
+  float t = (-(F*(A*K - J*B) + E*(J*C - A*L) + D*(B*L - K*C))) / M;
+
+  //Might want to fill out the rest of ray hit just in case
+  if(t < 0) {
+    rayHit.t = -1;
+    return rayHit;
+  }
+
+  if(gamma < 0 || gamma > 1) {
+    rayHit.t = -1;
+    return rayHit;
+  }
+
+  if(beta < 0 || beta > (1-gamma)) {
+    rayHit.t = -1;
+    return rayHit;
+  }
+  
+  //Now that we know the rayHit, we need to find light info
+
+
   
   return rayHit;
 }
@@ -284,7 +341,7 @@ int main(int argc, char *argv[]) {
 	if(rayHitArr[j].t > t && t < 0) {
 	  t = rayHitArr[j].t;
 	  max = j;
-	  printf("%d\n", max);
+	  //printf("%d\n", max);
 	}
 
 	else if(t > 0 && rayHitArr[j].t > 0 && rayHitArr[j].t < t) {
