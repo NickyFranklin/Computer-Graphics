@@ -44,6 +44,15 @@ float dotProduct(float x1, float y1, float z1, float x2, float y2, float z2) {
   return (x1 * x2) + (y1 * y2) + (z1 * z2);
 }
 
+Ray crossProduct(Ray ray1, Ray ray2) {
+  Ray ray;
+  ray.dir[0] = (ray1.dir[1] * ray2.dir[2]) - (ray1.dir[2] * ray2.dir[1]);
+  ray.dir[1] = (ray1.dir[2] * ray2.dir[0]) - (ray1.dir[0] * ray2.dir[2]);
+  ray.dir[2] = (ray1.dir[0] * ray2.dir[1]) - (ray1.dir[1] * ray2.dir[0]);
+  return ray;
+}
+
+
 //Subtracts vectors from eachother
 void subVector(float x1, float y1, float z1, float x2, float y2, float z2, float* resultX,
 		float* resultY, float* resultZ) {
@@ -133,7 +142,7 @@ RayHit Sphere_intersectT(Ray ray, Sphere sphere) {
   rayHit.t = t;
 
   for(int j = 0; j < 3; j++) {
-    ray.pos[j] = ray.dir[j] * t;
+    ray.pos[j] = ray.pos[j] + ray.dir[j] * t;
     //rayToIntersect.pos[j] = sphere.pos[j];
   }
   
@@ -171,8 +180,8 @@ RayHit TriangleIntersection(Ray ray, Triangle triangle) {
   float K = y1 - ray.pos[1];
   float L = z1 - ray.pos[2];
   float M = A*(E*I - H*F) + B*(G*F - D*I) + C*(D*H - E*G);
-  float beta = (J*(E*I - H*F) + K*(G*F - D*I) + L(D*H - E*G)) / M;
-  float gamma = (I*(A*K - J*B) + H*(J*C - A*L) + G(B*L - K*C)) / M;
+  float beta = (J*(E*I - H*F) + K*(G*F - D*I) + L*(D*H - E*G)) / M;
+  float gamma = (I*(A*K - J*B) + H*(J*C - A*L) + G*(B*L - K*C)) / M;
   float t = (-(F*(A*K - J*B) + E*(J*C - A*L) + D*(B*L - K*C))) / M;
 
   //Might want to fill out the rest of ray hit just in case
@@ -192,9 +201,30 @@ RayHit TriangleIntersection(Ray ray, Triangle triangle) {
   }
   
   //Now that we know the rayHit, we need to find light info
-
+  rayHit.t = t;
+  rayHit.material = triangle.material;
 
   
+  //Hopefull this look is ok
+  for(int j = 0; j < 3; j++) {
+    rayHit.pos[j] = ray.pos[j] + ray.dir[j] * t;
+  }
+  
+  Ray vectorAtoC;
+  Ray vectorAtoB;
+  for(int i = 0; i < 3; i++) {
+    vectorAtoC.dir[i] = triangle.v[2][i] - triangle.v[0][i];
+    vectorAtoB.dir[i] = triangle.v[1][i] - triangle.v[0][i];
+  }
+  //Do we want to normalize these vectors?
+  normalize(&vectorAtoC.dir[0], &vectorAtoC.dir[1], &vectorAtoC.dir[2]);
+  normalize(&vectorAtoB.dir[0], &vectorAtoB.dir[1], &vectorAtoB.dir[2]);
+  //We want to do B cross product C for the norm
+  Ray norm = crossProduct(vectorAtoB, vectorAtoC);
+  normalize(&norm.dir[0], &norm.dir[1], &norm.dir[2]);
+  for(int i = 0; i < 3; i++) {
+    rayHit.surfaceNorm[i] = norm.dir[i];
+  }
   return rayHit;
 }
 
@@ -267,6 +297,8 @@ int main(int argc, char *argv[]) {
   float pixelY = 0;
   
   Sphere sphereArr[3];
+  Triangle triangleArr[5];
+  int triangleArrSize = 5;
   int sphereArrSize = 3;
   for(int i = 0; i < sphereArrSize; i++) {
     if(i == 0) {
@@ -303,7 +335,77 @@ int main(int argc, char *argv[]) {
     }
     
   }
-  RayHit rayHitArr[3];
+  triangleArr[0].v[0][0] = -8;
+  triangleArr[0].v[0][1] = -2;
+  triangleArr[0].v[0][2] = -20;
+  triangleArr[0].v[1][0] = 8;
+  triangleArr[0].v[1][1] = -2;
+  triangleArr[0].v[1][2] = -20;
+  triangleArr[0].v[2][0] = 8;
+  triangleArr[0].v[2][1] = 10;
+  triangleArr[0].v[2][2] = -20;
+  triangleArr[0].material.color[0] = 0;
+  triangleArr[0].material.color[1] = 0;
+  triangleArr[0].material.color[2] = 1;
+  triangleArr[0].material.reflective = 0;
+
+  triangleArr[1].v[0][0] = -8;
+  triangleArr[1].v[0][1] = -2;
+  triangleArr[1].v[0][2] = -20;
+  triangleArr[1].v[1][0] = 8;
+  triangleArr[1].v[1][1] = 10;
+  triangleArr[1].v[1][2] = -20;
+  triangleArr[1].v[2][0] = -8;
+  triangleArr[1].v[2][1] = 10;
+  triangleArr[1].v[2][2] = -20;
+  triangleArr[1].material.color[0] = 0;
+  triangleArr[1].material.color[1] = 0;
+  triangleArr[1].material.color[2] = 1;
+  triangleArr[1].material.reflective = 0;
+
+  triangleArr[2].v[0][0] = -8;
+  triangleArr[2].v[0][1] = -2;
+  triangleArr[2].v[0][2] = -20;
+  triangleArr[2].v[1][0] = 8;
+  triangleArr[2].v[1][1] = -2;
+  triangleArr[2].v[1][2] = -10;
+  triangleArr[2].v[2][0] = 8;
+  triangleArr[2].v[2][1] = -2;
+  triangleArr[2].v[2][2] = -20;
+  triangleArr[2].material.color[0] = 1;
+  triangleArr[2].material.color[1] = 1;
+  triangleArr[2].material.color[2] = 1;
+  triangleArr[2].material.reflective = 0;
+
+  triangleArr[3].v[0][0] = -8;
+  triangleArr[3].v[0][1] = -2;
+  triangleArr[3].v[0][2] = -20;
+  triangleArr[3].v[1][0] = -8;
+  triangleArr[3].v[1][1] = -2;
+  triangleArr[3].v[1][2] = -10;
+  triangleArr[3].v[2][0] = 8;
+  triangleArr[3].v[2][1] = -2;
+  triangleArr[3].v[2][2] = -10;
+  triangleArr[3].material.color[0] = 1;
+  triangleArr[3].material.color[1] = 1;
+  triangleArr[3].material.color[2] = 1;
+  triangleArr[3].material.reflective = 0;  
+  
+  triangleArr[4].v[0][0] = 8;
+  triangleArr[4].v[0][1] = -2;
+  triangleArr[4].v[0][2] = -20;
+  triangleArr[4].v[1][0] = 8;
+  triangleArr[4].v[1][1] = -2;
+  triangleArr[4].v[1][2] = -10;
+  triangleArr[4].v[2][0] = 8;
+  triangleArr[4].v[2][1] = 10;
+  triangleArr[4].v[2][2] = -20;
+  triangleArr[4].material.color[0] = 1;
+  triangleArr[4].material.color[1] = 0;
+  triangleArr[4].material.color[2] = 0;
+  triangleArr[4].material.reflective = 0;
+  
+  RayHit rayHitArr[8];
   
   
   for(int y = 0; y < length; y++) {
@@ -330,20 +432,27 @@ int main(int argc, char *argv[]) {
       int max = 0;
       RayHit realRay;
       
-      for(int j = 0; j < sphereArrSize; j++) {
-	rayHitArr[j] = Sphere_intersectT(rayArr[i], sphereArr[j]);
+      for(int j = 0; j < sphereArrSize + triangleArrSize; j++) {
+	if(j < sphereArrSize) {
+	  rayHitArr[j] = Sphere_intersectT(rayArr[i], sphereArr[j]);
+	}
+
+	else {
+	  rayHitArr[j] = TriangleIntersection(rayArr[i], triangleArr[j-sphereArrSize]);
+	}
       }
 
       //realRay = rayHitArr[0];
       
       float t = -1;
-      for(int j = 0; j < sphereArrSize; j++) {
+      for(int j = 0; j < sphereArrSize + triangleArrSize; j++) {
+	
 	if(rayHitArr[j].t > t && t < 0) {
 	  t = rayHitArr[j].t;
 	  max = j;
 	  //printf("%d\n", max);
 	}
-
+	
 	else if(t > 0 && rayHitArr[j].t > 0 && rayHitArr[j].t < t) {
 	  t = rayHitArr[j].t;
 	  max = j;
