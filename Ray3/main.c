@@ -288,7 +288,9 @@ RayHit collision(RayHit* rayHitArr, Ray ray, Sphere* sphereArr, Triangle* triang
   return realRay;
 }
 
-float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i ) {
+float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i, Sphere* sphereArr,
+		     Triangle* triangleArr, int sphereArrSize, int triangleArrSize,
+		     RayHit* rayHitArr) {
   diffuse = 0.2;
   Ray ray = rayArr[i];
   Ray rayToLight;
@@ -305,6 +307,20 @@ float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i ) {
   if(diffuse < 0.2) {
     return diffuse = 0.2;
   }
+ 
+  realRay = collision(rayHitArr, rayToLight, sphereArr, triangleArr,
+		      sphereArrSize, triangleArrSize);
+
+  float tlight = 0;
+  tlight = sqrt( (lightPos[0] - rayToLight.pos[0]) * (lightPos[0] - rayToLight.pos[0]) +
+		 (lightPos[1] - rayToLight.pos[1]) * (lightPos[1] - rayToLight.pos[1]) +
+		 (lightPos[2] - rayToLight.pos[2]) * (lightPos[2] - rayToLight.pos[2]));
+
+  
+  if(realRay.t < tlight && realRay.t > 0) {
+    return 0.2;
+  }
+  
   return diffuse;
 }
 
@@ -485,7 +501,9 @@ int main(int argc, char *argv[]) {
       if(t > 0) {
 	if(realRay.material.reflective == 0) {
 	  float diffuse = 0.2;
-	  diffuse = diffuseShading(diffuse, realRay, rayArr, i);
+	  diffuse = diffuseShading(diffuse, realRay, rayArr, i, sphereArr,
+				   triangleArr, sphereArrSize, triangleArrSize, rayHitArr);
+	  
 	  pixelArr[i].r = realRay.material.color[0] * diffuse * 255;
 	  pixelArr[i].g = realRay.material.color[1] * diffuse * 255;
 	  pixelArr[i].b = realRay.material.color[2] * diffuse * 255;
@@ -519,7 +537,8 @@ int main(int argc, char *argv[]) {
 	    if(t > 0) {
 	      if(realRay.material.reflective == 0) {
 		float diffuse = 0.2;
-		diffuse = diffuseShading(diffuse, realRay, rayArr, i);
+		diffuse = diffuseShading(diffuse, realRay, rayArr, i, sphereArr,
+					 triangleArr, sphereArrSize, triangleArrSize, rayHitArr);
 		pixelArr[i].r = realRay.material.color[0] * diffuse * 255;
 		pixelArr[i].g = realRay.material.color[1] * diffuse * 255;
 		pixelArr[i].b = realRay.material.color[2] * diffuse * 255;
