@@ -268,7 +268,7 @@ RayHit collision(RayHit* rayHitArr, Ray ray, Sphere* sphereArr, Triangle* triang
   }
   
   //realRay = rayHitArr[0];
-  
+  int secondMax;
   float t = -1;
   for(int j = 0; j < sphereArrSize + triangleArrSize; j++) {
     
@@ -279,11 +279,14 @@ RayHit collision(RayHit* rayHitArr, Ray ray, Sphere* sphereArr, Triangle* triang
     }
     
     else if(t > 0 && rayHitArr[j].t > 0 && rayHitArr[j].t < t) {
-      t = rayHitArr[j].t;
-      max = j;
+	t = rayHitArr[j].t;
+	secondMax = max;
+	max = j;
+      
     }
     
   }
+  
   realRay = rayHitArr[max];
   return realRay;
 }
@@ -292,7 +295,7 @@ float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i, Sphere* 
 		     Triangle* triangleArr, int sphereArrSize, int triangleArrSize,
 		     RayHit* rayHitArr) {
   diffuse = 0.2;
-  Ray ray = rayArr[i];
+  //Ray ray = rayArr[i];
   Ray rayToLight;
   for(int j = 0; j < 3; j++) {
     rayToLight.pos[j] = realRay.pos[j];
@@ -301,26 +304,33 @@ float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i, Sphere* 
 	    rayToLight.pos[0], rayToLight.pos[1], rayToLight.pos[2],
 	    &rayToLight.dir[0], &rayToLight.dir[1], &rayToLight.dir[2]);
   normalize(&rayToLight.dir[0], &rayToLight.dir[1], &rayToLight.dir[2]);
-  
   diffuse = dotProduct(rayToLight.dir[0], rayToLight.dir[1], rayToLight.dir[2],
 		       realRay.surfaceNorm[0], realRay.surfaceNorm[1], realRay.surfaceNorm[2]);
   if(diffuse < 0.2) {
     return diffuse = 0.2;
   }
- 
+
+  for(int j = 0; j < 3; j++) {
+    rayToLight.pos[j] = rayToLight.pos[j] + rayToLight.dir[j] * 0.0001;
+  }
+  //int isDiffuse = 1;
   realRay = collision(rayHitArr, rayToLight, sphereArr, triangleArr,
 		      sphereArrSize, triangleArrSize);
-
+  
+  
   float tlight = 0;
   tlight = sqrt( (lightPos[0] - rayToLight.pos[0]) * (lightPos[0] - rayToLight.pos[0]) +
 		 (lightPos[1] - rayToLight.pos[1]) * (lightPos[1] - rayToLight.pos[1]) +
 		 (lightPos[2] - rayToLight.pos[2]) * (lightPos[2] - rayToLight.pos[2]));
 
-  
-  if(realRay.t < tlight && realRay.t > 0) {
+  float t = realRay.t;
+  if(t < tlight && t > 0) {
+    //printf("realRay.t = %f , tlight = %f\n", realRay.t, tlight);
     return 0.2;
   }
-  
+  if(t < tlight) {
+    printf("realRay.t = %f , tlight = %f\n", realRay.t, tlight);
+  }
   return diffuse;
 }
 
@@ -382,7 +392,7 @@ int main(int argc, char *argv[]) {
       sphereArr[i].material.color[0] = 0;
       sphereArr[i].material.color[1] = 1;
       sphereArr[i].material.color[2] = 0;
-      sphereArr[i].material.reflective = 1;
+      sphereArr[i].material.reflective = 0;
     }
     
     if(i == 1) {
@@ -393,7 +403,7 @@ int main(int argc, char *argv[]) {
       sphereArr[i].material.color[0] = 0;
       sphereArr[i].material.color[1] = 0;
       sphereArr[i].material.color[2] = 1;
-      sphereArr[i].material.reflective = 1;
+      sphereArr[i].material.reflective = 0;
     }
 
     if(i == 2) {
