@@ -100,11 +100,15 @@ RayHit Sphere_intersectT(Ray ray, Sphere sphere) {
   }
   rayHit.material.reflective = sphere.material.reflective;
   rayHit.material = sphere.material;
-  
+  //centerX = sphere.pos[0];
+  //centerY = sphere.pos[1];
+  //centerZ = sphere.pos[2];
   //This may be an issue as I believe this is negative but it might be fine
-  subVector(ray.pos[0], ray.pos[1], ray.pos[2], sphere.pos[0], sphere.pos[1], sphere.pos[2], &centerX,
-	    &centerY, &centerZ);
-
+  
+  subVector(ray.pos[0], ray.pos[1], ray.pos[2],
+	    sphere.pos[0], sphere.pos[1], sphere.pos[2],
+	    &centerX, &centerY, &centerZ);
+  
   float discriminant;
 
   //This calculates ((d * (e-c))^2)
@@ -140,7 +144,7 @@ RayHit Sphere_intersectT(Ray ray, Sphere sphere) {
     t = otherT;
   }
   rayHit.t = t;
-
+  normalize(&ray.dir[0], &ray.dir[1], &ray.dir[2]);
   for(int j = 0; j < 3; j++) {
     ray.pos[j] = ray.pos[j] + ray.dir[j] * t;
     //rayToIntersect.pos[j] = sphere.pos[j];
@@ -206,6 +210,7 @@ RayHit TriangleIntersection(Ray ray, Triangle triangle) {
 
   
   //Hopefull this look is ok
+  normalize(&ray.dir[0], &ray.dir[1], &ray.dir[2]);
   for(int j = 0; j < 3; j++) {
     rayHit.pos[j] = ray.pos[j] + ray.dir[j] * t;
   }
@@ -256,7 +261,9 @@ RayHit collision(RayHit* rayHitArr, Ray ray, Sphere* sphereArr, Triangle* triang
 		 int sphereArrSize, int triangleArrSize) {
   int max = 0;
   RayHit realRay;
-  
+  //ray.pos[0] = ray.pos[0] + 0.0001 * ray.dir[0];
+  //ray.pos[1] = ray.pos[1] + 0.0001 * ray.dir[1];
+  //ray.pos[2] = ray.pos[2] + 0.0001 * ray.dir[2];
   for(int j = 0; j < sphereArrSize + triangleArrSize; j++) {
     if(j < sphereArrSize) {
       rayHitArr[j] = Sphere_intersectT(ray, sphereArr[j]);
@@ -268,30 +275,31 @@ RayHit collision(RayHit* rayHitArr, Ray ray, Sphere* sphereArr, Triangle* triang
   }
   
   //realRay = rayHitArr[0];
-  int secondMax;
+  //int secondMax;
   float t = -1;
   for(int j = 0; j < sphereArrSize + triangleArrSize; j++) {
     
-    if(rayHitArr[j].t > t && t < 0) {
+    if(rayHitArr[j].t > t && t < 0 && rayHitArr[j].t > 0) {
       t = rayHitArr[j].t;
       max = j;
       //printf("%d\n", max);
     }
-    
+
+    /*
     else if(t > 0 && rayHitArr[j].t > 0 && rayHitArr[j].t < t) {
 	t = rayHitArr[j].t;
-	secondMax = max;
+	//secondMax = max;
 	max = j;
       
     }
-    
+    */
   }
   
   realRay = rayHitArr[max];
   return realRay;
 }
 
-float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i, Sphere* sphereArr,
+float diffuseShading(float diffuse, RayHit realRay, Sphere* sphereArr,
 		     Triangle* triangleArr, int sphereArrSize, int triangleArrSize,
 		     RayHit* rayHitArr) {
   diffuse = 0.2;
@@ -322,19 +330,17 @@ float diffuseShading(float diffuse, RayHit realRay, Ray *rayArr, int i, Sphere* 
   tlight = sqrt( (lightPos[0] - rayToLight.pos[0]) * (lightPos[0] - rayToLight.pos[0]) +
 		 (lightPos[1] - rayToLight.pos[1]) * (lightPos[1] - rayToLight.pos[1]) +
 		 (lightPos[2] - rayToLight.pos[2]) * (lightPos[2] - rayToLight.pos[2]));
-
+  
   float t = realRay.t;
   if(t < tlight && t > 0) {
     //printf("realRay.t = %f , tlight = %f\n", realRay.t, tlight);
     return 0.2;
   }
-  if(t < tlight) {
-    printf("realRay.t = %f , tlight = %f\n", realRay.t, tlight);
-  }
+  
   return diffuse;
-}
-
-
+  
+} 
+  
 int main(int argc, char *argv[]) {
   //We will need width and length for the window
   int width;
@@ -390,9 +396,9 @@ int main(int argc, char *argv[]) {
       sphereArr[i].pos[2] = -16;
       sphereArr[i].radius = 2;
       sphereArr[i].material.color[0] = 0;
-      sphereArr[i].material.color[1] = 1;
+      sphereArr[i].material.color[1] = 0;
       sphereArr[i].material.color[2] = 0;
-      sphereArr[i].material.reflective = 0;
+      sphereArr[i].material.reflective = 1;
     }
     
     if(i == 1) {
@@ -402,8 +408,8 @@ int main(int argc, char *argv[]) {
       sphereArr[i].radius = 1;
       sphereArr[i].material.color[0] = 0;
       sphereArr[i].material.color[1] = 0;
-      sphereArr[i].material.color[2] = 1;
-      sphereArr[i].material.reflective = 0;
+      sphereArr[i].material.color[2] = 0;
+      sphereArr[i].material.reflective = 1;
     }
 
     if(i == 2) {
@@ -511,7 +517,7 @@ int main(int argc, char *argv[]) {
       if(t > 0) {
 	if(realRay.material.reflective == 0) {
 	  float diffuse = 0.2;
-	  diffuse = diffuseShading(diffuse, realRay, rayArr, i, sphereArr,
+	  diffuse = diffuseShading(diffuse, realRay, sphereArr,
 				   triangleArr, sphereArrSize, triangleArrSize, rayHitArr);
 	  
 	  pixelArr[i].r = realRay.material.color[0] * diffuse * 255;
@@ -520,64 +526,68 @@ int main(int argc, char *argv[]) {
 	}
 	
 	else if(realRay.material.reflective > 0) {
-	  Ray reflection = rayArr[i];
+	  Ray d = rayArr[i];
 	  for(int j = 0; j < 10; j++) {
+	    //Ray reflection;
 	    //d is our ray's direction, n is the surface normal of the object
 	    // we have both of these already
-	    normalize(&reflection.dir[0], &reflection.dir[1], &reflection.dir[2]);
+	    d.pos[0] = realRay.pos[0];
+	    d.pos[1] = realRay.pos[1];
+	    d.pos[2] = realRay.pos[2];
+	    //d.pos[0] = d.pos[0] + 0.001*d.dir[0];
+	    //d.pos[1] = d.pos[1] + 0.001*d.dir[1];
+	    //d.pos[2] = d.pos[2] + 0.001*d.dir[2];
+	    normalize(&d.dir[0], &d.dir[1], &d.dir[2]);
 	    normalize(&realRay.surfaceNorm[0], &realRay.surfaceNorm[1], &realRay.surfaceNorm[2]);
-	    float dotProd = dotProduct(reflection.dir[0], reflection.dir[1], reflection.dir[2],
+	    float dotProd = dotProduct(d.dir[0], d.dir[1], d.dir[2],
 				       realRay.surfaceNorm[0], realRay.surfaceNorm[1],
 				       realRay.surfaceNorm[2]);
 	    for(int k = 0; k < 3; k++) {
-	      reflection.pos[k] = realRay.pos[k];
-	      reflection.dir[k] = reflection.dir[k] + -2 *
-		(dotProd ) * realRay.surfaceNorm[k];
+	      d.dir[k] = (d.dir[k] + (-2 *
+				      (dotProd) * realRay.surfaceNorm[k]));
 	    }
-
+	    //d.pos[0] = d.pos[0] + 0.001*d.dir[0];
+	    //d.pos[1] = d.pos[1] + 0.001*d.dir[1];
+	    //d.pos[2] = d.pos[2] + 0.001*d.dir[2];
+	    //reflection = d;
 	    //Calculate if hit
-	    normalize(&reflection.dir[0], &reflection.dir[1], &reflection.dir[2]);
-	    realRay = collision(rayHitArr, reflection, sphereArr, triangleArr,
+	    normalize(&d.dir[0], &d.dir[1], &d.dir[2]);
+	    //d.pos[0] = d.pos[0] + 0.001*d.dir[0];
+	    //d.pos[1] = d.pos[1] + 0.001*d.dir[1];
+	    //d.pos[2] = d.pos[2] + 0.001*d.dir[2];
+	    realRay = collision(rayHitArr, d, sphereArr, triangleArr,
 				sphereArrSize, triangleArrSize);
 	    t = -1;
 	    if(realRay.t > 0) {
-	      t = realRay.t;
-	    }
-	    
-	    if(t > 0) {
 	      if(realRay.material.reflective == 0) {
 		float diffuse = 0.2;
-		diffuse = diffuseShading(diffuse, realRay, rayArr, i, sphereArr,
+		diffuse = diffuseShading(diffuse, realRay, sphereArr,
 					 triangleArr, sphereArrSize, triangleArrSize, rayHitArr);
 		pixelArr[i].r = realRay.material.color[0] * diffuse * 255;
 		pixelArr[i].g = realRay.material.color[1] * diffuse * 255;
 		pixelArr[i].b = realRay.material.color[2] * diffuse * 255;
-		j=10;
+		j = 10;
 	      }
-	      
 	    }
+	    
 	    else {
 	      pixelArr[i].r = 0;
 	      pixelArr[i].g = 0;
 	      pixelArr[i].b = 0;
-	      j=10;
+	      j = 10;
 	    }
-	  }
+	  }  
 	}
+	
       }
-
       else {
 	pixelArr[i].r = 0;
 	pixelArr[i].g = 0;
 	pixelArr[i].b = 0;
       }
+      
     }
-    
-
-
-    
   }
-
   FILE *fp;
   fp = fopen("sphere.png", "w");
   stbi_write_png("sphere.png", 512, 512, 3, pixelArr, 512*3);
