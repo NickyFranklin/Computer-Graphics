@@ -18,8 +18,9 @@
 
 static GLuint program = 0; /**< id value for the GLSL program */
 
-static kuhl_geometry triangle;
-static kuhl_geometry quad;
+//static kuhl_geometry triangle;
+static kuhl_geometry quad1;
+static kuhl_geometry roof;
 static kuhl_geometry ground;
 
 
@@ -103,7 +104,7 @@ void display()
 		/* Create a scale matrix. */
 		float scaleMat[16];
 		mat4f_scale_new(scaleMat, 3, 3, 3);
-
+		
 
 		/* Last parameter must be NULL, otherwise your program
 		   can/will crash. The modelview matrix is (the view matrix) *
@@ -137,13 +138,61 @@ void display()
 		/* Draw the geometry using the matrices that we sent to the
 		 * vertex programs immediately above */
 		//kuhl_geometry_draw(&triangle);
-		kuhl_geometry_draw(&quad);
 		kuhl_geometry_draw(&ground);
+		kuhl_geometry_draw(&roof);
+		//kuhl_geometry_draw(&quad1);
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
 		 * to change the ModelView matrix and then call
 		 * kuhl_geometry_draw() again to draw that object again using
 		 * the new model matrix. */
+		float transMatrix[] = {1, 0, 0, 0,
+				       0, 1, 0, 0,
+				       0, 0, 1, 0,
+				       2, 0, 2, 1};
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix,NULL);
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&quad1);
+
+		float transMatrix2[] = {1, 0, 0, 0,
+				       0, 1, 0, 0,
+				       0, 0, 1, 0,
+				       -2, 0, 2, 1};
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix2,NULL);
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&quad1);
+
+		float transMatrix3[] = {1, 0, 0, 0,
+				       0, 1, 0, 0,
+				       0, 0, 1, 0,
+				       2, 0, -2, 1};
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix3,NULL);
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&quad1);
+
+		float transMatrix4[] = {1, 0, 0, 0,
+				       0, 1, 0, 0,
+				       0, 0, 1, 0,
+				       -2, 0, -2, 1};
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix4,NULL);
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&quad1);
+		//kuhl_geometry_draw(&quad2);
+		//kuhl_geometry_draw(&quad3);
+		//kuhl_geometry_draw(&quad4);
+		
 
 		glUseProgram(0); // stop using a GLSL program.
 		viewmat_end_eye(viewportID);
@@ -183,31 +232,28 @@ void init_ground(kuhl_geometry *geom, GLuint prog) {
   //kuhl_geometry_new(geom, prog, 7, GL_TRIANGLES);
   kuhl_geometry_new(geom, prog, 18, GL_TRIANGLES);
   GLfloat vertexPositions[] = {0, 0, 0,
-			       sin(M_PI/3), 0, cos(M_PI/3),
-                               sin((2 * M_PI)/3), 0, cos((2 * M_PI)/3),
+			       5*sin(M_PI/3), 0, 5*cos(M_PI/3),
+                               5*sin((2 * M_PI)/3), 0, 5*cos((2 * M_PI)/3),
 			       //Triangle rotated 60 degrees
 			       0, 0, 0,
-			       sin((2 * M_PI)/3), 0, cos((2 * M_PI)/3),
-                               sin((3 * M_PI)/3), 0, cos((3 * M_PI)/3),
+			       5*sin((2 * M_PI)/3), 0, 5*cos((2 * M_PI)/3),
+                               5*sin((3 * M_PI)/3), 0, 5*cos((3 * M_PI)/3),
 			       //Triangle rotated 120 Degrees
 			       0, 0, 0,
-			       sin((3 * M_PI)/3), 0, cos((3 * M_PI)/3),
-                               sin((4 * M_PI)/3), 0, cos((4 * M_PI)/3),
+			       5*sin((3 * M_PI)/3), 0, 5*cos((3 * M_PI)/3),
+                               5*sin((4 * M_PI)/3), 0, 5*cos((4 * M_PI)/3),
 			       //Triangle flipped 180 degrees
 			       0, 0, 0,
-			       sin((4 * M_PI)/3), 0, cos((4 * M_PI)/3),
-                               sin((5 * M_PI)/3), 0, cos((5 * M_PI)/3),
+			       5*sin((4 * M_PI)/3), 0, 5*cos((4 * M_PI)/3),
+                               5*sin((5 * M_PI)/3), 0, 5*cos((5 * M_PI)/3),
 			       //Triangle flipped 240 degrees
 			       0, 0, 0,
-			       sin((5 * M_PI)/3), 0, cos((5 * M_PI)/3),
-                               sin((6 * M_PI)/3), 0, cos((6 * M_PI)/3),
+			       5*sin((5 * M_PI)/3), 0, 5*cos((5 * M_PI)/3),
+                               5*sin((6 * M_PI)/3), 0, 5*cos((6 * M_PI)/3),
 			       //Triamgle flipped 300 Degrees
 			       0, 0, 0,
-			       sin((6 * M_PI)/3), 0, cos((6 * M_PI)/3),
-                               sin((7 * M_PI)/3), 0, cos((7 * M_PI)/3)};
-  for(int i = 0; i < 18*3; i++) {
-    vertexPositions[i] *= 5;
-  }
+			       5*sin((6 * M_PI)/3), 0, 5*cos((6 * M_PI)/3),
+                               5*sin((7 * M_PI)/3), 0, 5*cos((7 * M_PI)/3)};
   kuhl_geometry_attrib(geom, vertexPositions, // data
 	                     3, // number of components (x,y,z)
 	                     "in_Position", // GLSL variable
@@ -240,11 +286,81 @@ void init_ground(kuhl_geometry *geom, GLuint prog) {
   kuhl_geometry_attrib(geom, normalData, 3, "in_Normal", KG_WARN);
 }
 
+void init_roof(kuhl_geometry *geom, GLuint prog) {
+  //kuhl_geometry_new(geom, prog, 7, GL_TRIANGLES);
+  kuhl_geometry_new(geom, prog, 18, GL_TRIANGLES);
+  GLfloat vertexPositions[] = {0, 6, 0,
+			       5*sin(M_PI/3), 5, 5*cos(M_PI/3),
+                               5*sin((2 * M_PI)/3), 5, 5*cos((2 * M_PI)/3),
+			       //Triangle rotated 60 degrees
+			       0, 6, 0,
+			       5*sin((2 * M_PI)/3), 5, 5*cos((2 * M_PI)/3),
+                               5*sin((3 * M_PI)/3), 5, 5*cos((3 * M_PI)/3),
+			       //Triangle rotated 120 Degrees
+			       0, 6, 0,
+			       5*sin((3 * M_PI)/3), 5, 5*cos((3 * M_PI)/3),
+                               5*sin((4 * M_PI)/3), 5, 5*cos((4 * M_PI)/3),
+			       //Triangle flipped 180 degrees
+			       0, 6, 0,
+			       5*sin((4 * M_PI)/3), 5, 5*cos((4 * M_PI)/3),
+                               5*sin((5 * M_PI)/3), 5, 5*cos((5 * M_PI)/3),
+			       //Triangle flipped 240 degrees
+			       0, 6, 0,
+			       5*sin((5 * M_PI)/3), 5, 5*cos((5 * M_PI)/3),
+                               5*sin((6 * M_PI)/3), 5, 5*cos((6 * M_PI)/3),
+			       //Triamgle flipped 300 Degrees
+			       0, 6, 0,
+			       5*sin((6 * M_PI)/3), 5, 5*cos((6 * M_PI)/3),
+                               5*sin((7 * M_PI)/3), 5, 5*cos((7 * M_PI)/3)};
+  kuhl_geometry_attrib(geom, vertexPositions, // data
+	                     3, // number of components (x,y,z)
+	                     "in_Position", // GLSL variable
+	                     KG_WARN); // warn if attribute is missing in GLSL program?
+
+  float norm1[3];
+  float norm2[3];
+  float norm3[3];
+  float norm4[3];
+  float norm5[3];
+  float norm6[3];
+  float aMinusb[3];
+  float aMinusc[3];
+  float bMinusc[3];
+  
+  
+  
+  /* The normals for each vertex */
+  GLfloat normalData[] = {0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1,
+			  //
+			  0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1,
+			  //
+			  0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1,
+			  //
+			  0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1,
+			  //
+			  0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1,
+			  //
+			  0, 0, 1,
+			  0, 0, 1,
+			  0, 0, 1};
+  kuhl_geometry_attrib(geom, normalData, 3, "in_Normal", KG_WARN);
+}
+
 /* This illustrates how to draw a quad by drawing two triangles and reusing vertices. */
 void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 {
 	kuhl_geometry_new(geom, prog,
-	                  4, // number of vertices
+	                  16, // number of vertices
 	                  GL_TRIANGLES); // type of thing to draw
 
 	/* Vertices that we want to form triangles out of. Every 3 numbers
@@ -253,7 +369,7 @@ void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 	GLfloat vertexPositions[] = {-0.05, 0, 0,
 	                             0.05, 0, 0,
 	                             0.05, 5, 0,
-	                             -0.05, 5, 0 };
+	                             -0.05, 5, 0};
 	kuhl_geometry_attrib(geom, vertexPositions,
 	                     3, // number of components x,y,z
 	                     "in_Position", // GLSL variable
@@ -302,9 +418,9 @@ int main(int argc, char** argv)
 	/* Create kuhl_geometry structs for the objects that we want to
 	 * draw. */
 	//init_geometryTriangle(&triangle, program);
-	init_geometryQuad(&quad, program);
+	init_geometryQuad(&quad1, program);
 	init_ground(&ground, program);
-
+	init_roof(&roof, program);
 	dgr_init();     /* Initialize DGR based on config file. */
 
 	float initCamPos[3]  = {0,0,10}; // location of camera
