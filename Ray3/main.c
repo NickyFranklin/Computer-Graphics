@@ -190,16 +190,19 @@ RayHit TriangleIntersection(Ray ray, Triangle triangle) {
   //Might want to fill out the rest of ray hit just in case
   if(t < 0) {
     rayHit.t = -1;
+    rayHit.material = triangle.material;
     return rayHit;
   }
 
   if(gamma < 0 || gamma > 1) {
     rayHit.t = -1;
+    rayHit.material = triangle.material;
     return rayHit;
   }
 
   if(beta < 0 || beta > (1-gamma)) {
     rayHit.t = -1;
+    rayHit.material = triangle.material;
     return rayHit;
   }
   
