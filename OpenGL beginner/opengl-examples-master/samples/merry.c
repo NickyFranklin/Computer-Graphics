@@ -22,7 +22,9 @@ static GLuint program = 0; /**< id value for the GLSL program */
 static kuhl_geometry quad1;
 static kuhl_geometry roof;
 static kuhl_geometry ground;
-
+static kuhl_geometry *hippo;
+static kuhl_geometry *cow;
+static kuhl_geometry *lion;
 
 static int isRotating=1;
 
@@ -154,7 +156,7 @@ void display()
 		float transMatrix[] = {1, 0, 0, 0,
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
-				       2, 0, 2, 1};
+				       0, 0, -4, 1};
 		if(isRotating) {
 		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix,NULL);
 		}
@@ -167,10 +169,28 @@ void display()
 		                   modelview); // value
 		kuhl_geometry_draw(&quad1);
 
+
+		float transMatrixHippo[] = {-1, 0, 0, 0,
+					    0, 1, 0, 0,
+					    0, 0, 1, 0,
+					    0, 0, -4, 1};
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrixHippo,NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrixHippo, NULL);
+		}
+		
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value 
+		kuhl_geometry_draw(hippo);
+		
 		float transMatrix2[] = {1, 0, 0, 0,
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
-				       -2, 0, 2, 1};
+				       0, 0, 4, 1};
 		if(isRotating) {
 		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix2,NULL);
 		}
@@ -185,10 +205,28 @@ void display()
 		                   modelview); // value
 		kuhl_geometry_draw(&quad1);
 
+		float transMatrixCow[] =  {1, 0, 0, 0,
+					    0, 1, 0, 0,
+					    0, 0, 1, 0,
+					    0, 0, 4, 1};
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrixCow,NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrixCow, NULL);
+		}
+		
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value 
+		kuhl_geometry_draw(cow);
+
+		
 		float transMatrix3[] = {1, 0, 0, 0,
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
-				       2, 0, -2, 1};
+				       4, 0, 0, 1};
 		if(isRotating) {
 		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix3, NULL);
 		}
@@ -203,10 +241,27 @@ void display()
 		                   modelview); // value
 		kuhl_geometry_draw(&quad1);
 
+		float transMatrixLion[] = {cos(M_PI/2), 0, -sin(M_PI/2), 0,
+					   0, 1, 0, 0,
+					   sin(M_PI/2), 0, cos(M_PI/2), 0,
+					   4, 0, 0, 1};
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrixLion,NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrixLion, NULL);
+		}
+		
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value 
+		kuhl_geometry_draw(lion);
+		
 		float transMatrix4[] = {1, 0, 0, 0,
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
-				       -2, 0, -2, 1};
+				       -4, 0, 0, 1};
 		if(isRotating) {
 		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix4,NULL);
 		}
@@ -443,7 +498,7 @@ void init_roof(kuhl_geometry *geom, GLuint prog) {
 void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 {
 	kuhl_geometry_new(geom, prog,
-	                  16, // number of vertices
+	                  4, // number of vertices
 	                  GL_TRIANGLES); // type of thing to draw
 
 	/* Vertices that we want to form triangles out of. Every 3 numbers
@@ -460,8 +515,8 @@ void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 
 	/* The normals for each vertex */
 	GLfloat normalData[] = {-1, 0, 0,
-	                        1, 0, 0,
-	                        1, 0, 0,
+	                        -1, 0, 0,
+	                        -1, 0, 0,
 	                        -1, 0, 0};
 	kuhl_geometry_attrib(geom, normalData, 3, "in_Normal", KG_WARN);
 	
@@ -504,6 +559,9 @@ int main(int argc, char** argv)
 	init_geometryQuad(&quad1, program);
 	init_ground(&ground, program);
 	init_roof(&roof, program);
+	hippo = kuhl_load_model("../models/merry/hippo.ply", NULL, program, NULL);
+	cow = kuhl_load_model("../models/merry/cow.ply", NULL, program, NULL);
+	lion = kuhl_load_model("../models/merry/lion.ply", NULL, program, NULL);
 	dgr_init();     /* Initialize DGR based on config file. */
 
 	float initCamPos[3]  = {0,0,10}; // location of camera
