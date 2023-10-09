@@ -24,7 +24,7 @@ static kuhl_geometry roof;
 static kuhl_geometry ground;
 
 
-static int isRotating=0;
+static int isRotating=1;
 
 /* Called by GLFW whenever a key is pressed. */
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -100,7 +100,7 @@ void display()
 		/* Create a 4x4 rotation matrix based on the angle we computed. */
 		float rotateMat[16];
 		mat4f_rotateAxis_new(rotateMat, angle, 0,1,0);
-
+	  
 		/* Create a scale matrix. */
 		float scaleMat[16];
 		mat4f_scale_new(scaleMat, 3, 3, 3);
@@ -116,8 +116,13 @@ void display()
 		                         ^---model matrix---^
 		*/
 		float modelview[16];
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, NULL);
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, NULL);
+		}
 
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, NULL);
+		}
 		/* Tell OpenGL which GLSL program the subsequent
 		 * glUniformMatrix4fv() calls are for. */
 		kuhl_errorcheck();
@@ -150,7 +155,12 @@ void display()
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
 				       2, 0, 2, 1};
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix,NULL);
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix,NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrix, NULL);
+		}
 		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
 		                   1, // number of 4x4 float matrices
 		                   0, // transpose
@@ -161,7 +171,14 @@ void display()
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
 				       -2, 0, 2, 1};
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix2,NULL);
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix2,NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrix2, NULL);
+		}
+		
+		//mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix2,NULL);
 		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
 		                   1, // number of 4x4 float matrices
 		                   0, // transpose
@@ -172,7 +189,14 @@ void display()
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
 				       2, 0, -2, 1};
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix3,NULL);
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix3, NULL);
+		}
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrix3, NULL);
+		}
+		
+		//mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix3,NULL);
 		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
 		                   1, // number of 4x4 float matrices
 		                   0, // transpose
@@ -183,7 +207,15 @@ void display()
 				       0, 1, 0, 0,
 				       0, 0, 1, 0,
 				       -2, 0, -2, 1};
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix4,NULL);
+		if(isRotating) {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix4,NULL);
+		}
+		
+		else {
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, transMatrix4, NULL);
+		}
+		
+		//mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMatrix4,NULL);
 		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
 		                   1, // number of 4x4 float matrices
 		                   0, // transpose
@@ -323,36 +355,87 @@ void init_roof(kuhl_geometry *geom, GLuint prog) {
   float norm4[3];
   float norm5[3];
   float norm6[3];
-  float aMinusb[3];
-  float aMinusc[3];
-  float bMinusc[3];
+  float triangle1P1[3];
+  float triangle1P2[3];
+  float triangle2P1[3];
+  float triangle2P2[3];
+  float triangle3P1[3];
+  float triangle3P2[3];
+  float triangle4P1[3];
+  float triangle4P2[3];
+  float triangle5P1[3];
+  float triangle5P2[3];
+  float triangle6P1[3];
+  float triangle6P2[3];
+  triangle1P1[0] = 5*sin(M_PI/3);
+  triangle1P1[1] =  -1;
+  triangle1P1[2] =  5*cos(M_PI/3);
+  triangle1P2[0] = 5*sin(2 * M_PI/3);
+  triangle1P2[1] =  -1;
+  triangle1P2[2] =  5*cos(2 * M_PI/3);
+  triangle2P1[0] = 5*sin(2 * M_PI/3);
+  triangle2P1[1] =  -1;
+  triangle2P1[2] =  5*cos(2 * M_PI/3);
+  triangle2P2[0] = 5*sin(3 * M_PI/3);
+  triangle2P2[1] =  -1;
+  triangle2P2[2] =  5*cos(3 * M_PI/3);
+  triangle3P1[0] = 5*sin(3 * M_PI/3);
+  triangle3P1[1] =  -1;
+  triangle3P1[2] =  5*cos(3 * M_PI/3);
+  triangle3P2[0] = 5*sin(4 * M_PI/3);
+  triangle3P2[1] =  -1;
+  triangle3P2[2] =  5*cos(4 * M_PI/3);
+  triangle4P1[0] = 5*sin(4 * M_PI/3);
+  triangle4P1[1] =  -1;
+  triangle4P1[2] =  5*cos(4 * M_PI/3);
+  triangle4P2[0] = 5*sin(5 * M_PI/3);
+  triangle4P2[1] =  -1;
+  triangle4P2[2] =  5*cos(5 * M_PI/3);
+  triangle5P1[0] = 5*sin(5 * M_PI/3);
+  triangle5P1[1] =  -1;
+  triangle5P1[2] =  5*cos(5 * M_PI/3);
+  triangle5P2[0] = 5*sin(6 * M_PI/3);
+  triangle5P2[1] =  -1;
+  triangle5P2[2] =  5*cos(6 * M_PI/3);
+  triangle6P1[0] = 5*sin(6 * M_PI/3);
+  triangle6P1[1] =  -1;
+  triangle6P1[2] =  5*cos(6 * M_PI/3);
+  triangle6P2[0] = 5*sin(7 * M_PI/3);
+  triangle6P2[1] =  -1;
+  triangle6P2[2] =  5*cos(7 * M_PI/3);
   
+  vec3f_cross_new(norm1, triangle1P1, triangle1P2);
+  vec3f_cross_new(norm2, triangle2P1, triangle2P2);
+  vec3f_cross_new(norm3, triangle3P1, triangle3P2);
+  vec3f_cross_new(norm4, triangle4P1, triangle4P2);
+  vec3f_cross_new(norm5, triangle5P1, triangle5P2);
+  vec3f_cross_new(norm6, triangle6P1, triangle6P2);
   
   
   /* The normals for each vertex */
-  GLfloat normalData[] = {0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1,
+  GLfloat normalData[] = {norm1[0], norm1[1], norm1[2],
+			  norm1[0], norm1[1], norm1[2],
+			  norm1[0], norm1[1], norm1[2],
 			  //
-			  0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1,
+			  norm2[0], norm2[1], norm2[2],
+			  norm2[0], norm2[1], norm2[2],
+			  norm2[0], norm2[1], norm2[2],
 			  //
-			  0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1,
+			  norm3[0], norm3[1], norm3[2],
+			  norm3[0], norm3[1], norm3[2],
+			  norm3[0], norm3[1], norm3[2],
 			  //
-			  0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1,
+			  norm4[0], norm4[1], norm4[2],
+			  norm4[0], norm4[1], norm4[2],
+			  norm4[0], norm4[1], norm4[2],
 			  //
-			  0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1,
+			  norm5[0], norm5[1], norm5[2],
+			  norm5[0], norm5[1], norm5[2],
+			  norm5[0], norm5[1], norm5[2],
 			  //
-			  0, 0, 1,
-			  0, 0, 1,
-			  0, 0, 1};
+			  norm6[0], norm6[1], norm6[2],
+			  norm6[0], norm6[1], norm6[2],
+			  norm6[0], norm6[1], norm6[2],};
   kuhl_geometry_attrib(geom, normalData, 3, "in_Normal", KG_WARN);
 }
 
@@ -368,18 +451,18 @@ void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 	 * triangles out of these vertices. */
 	GLfloat vertexPositions[] = {-0.05, 0, 0,
 	                             0.05, 0, 0,
-	                             0.05, 5, 0,
-	                             -0.05, 5, 0};
+	                             0.05, 5.2, 0,
+	                             -0.05, 5.2, 0};
 	kuhl_geometry_attrib(geom, vertexPositions,
 	                     3, // number of components x,y,z
 	                     "in_Position", // GLSL variable
 	                     KG_WARN); // warn if attribute is missing in GLSL program?
 
 	/* The normals for each vertex */
-	GLfloat normalData[] = {0, 0, 1,
-	                        0, 0, 1,
-	                        0, 0, 1,
-	                        0, 0, 1};
+	GLfloat normalData[] = {-1, 0, 0,
+	                        1, 0, 0,
+	                        1, 0, 0,
+	                        -1, 0, 0};
 	kuhl_geometry_attrib(geom, normalData, 3, "in_Normal", KG_WARN);
 	
 	/* A list of triangles that we want to draw. "0" refers to the
