@@ -615,7 +615,7 @@ int main(int argc, char** argv)
 	lion = kuhl_load_model("../models/merry/lion.ply", NULL, program, NULL);
 	dgr_init();     /* Initialize DGR based on config file. */
 
-	float initCamPos[3]  = {0,0,10}; // location of camera
+	float initCamPos[3]  = {0,10,50}; // location of camera
 	float initCamLook[3] = {0,0,0}; // a point the camera is facing at
 	float initCamUp[3]   = {0,1,0}; // a vector indicating which direction is up
 	viewmat_init(initCamPos, initCamLook, initCamUp);

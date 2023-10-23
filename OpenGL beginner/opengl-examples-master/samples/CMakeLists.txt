@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 2.8.12)
 # If you add a new name here, there must be an .c or .cpp file with the same
 # name that contains a main() function.
 ####################################
-set(PROGRAMS_TO_MAKE merry triangle triangle-gui triangle-shade triangle-color texture texturefilter glinfo teartest picker prerend panorama pong text ogl2-slideshow ogl2-triangle ogl2-texture tracker-stats videoplay zfight viewer slerp explode flock flock-instanced frustum ik tracker-demo distjudge)
+set(PROGRAMS_TO_MAKE infinicity merry triangle triangle-gui triangle-shade triangle-color texture texturefilter glinfo teartest picker prerend panorama pong text ogl2-slideshow ogl2-triangle ogl2-texture tracker-stats videoplay zfight viewer slerp explode flock flock-instanced frustum ik tracker-demo distjudge)
 
 
 # Make a target that lets us copy all of the vert and frag files from this directory into the bin directory.
