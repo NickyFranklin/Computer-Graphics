@@ -19,6 +19,7 @@
 static GLuint program = 0; /**< id value for the GLSL program */
 
 static kuhl_geometry building;
+static kuhl_geometry windows;
 int isForward = 0;
 int isBackward = 0;
 int isNew = 1;
@@ -124,7 +125,7 @@ void display()
 		mat4f_scale_new(scaleMat, 3, 3, 3);
 
 		//float transMat[16];
-		float transMat2[16];
+		//float transMat2[16];
 		if(isNew) {
 		  mat4f_identity(transMat);
 		  isNew = 0;
@@ -170,6 +171,7 @@ void display()
 		/* Draw the geometry using the matrices that we sent to the
 		 * vertex programs immediately above */
 		kuhl_geometry_draw(&building);
+		kuhl_geometry_draw(&windows);
 
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
@@ -188,6 +190,82 @@ void display()
 
 }
 
+void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
+		     float height, float seed) {
+  //Find the amount of windows that can fit in each face
+  //Windows will be 0.5 by 0.5
+  float triangleWidth = 0.5;
+  float triangleHeight = 0.5;
+  //Small line between triangles
+  float lineSpace = 0.07;
+  int rows = width / (triangleHeight + lineSpace);
+  int collumns = height / (triangleWidth + lineSpace);
+  //lineSpace = (width - (((float) rows) * triangleWidth)) / ((float) rows);
+  //n windows = n*2 triangles = n*2*3 verticies = n*2*3*3 datapoints
+  int windows = rows * collumns;
+  int totalVerts = 2*3*windows;
+  int windowCount = 0;
+  kuhl_geometry_new(geom, prog, totalVerts, // num vertices
+		    GL_TRIANGLES); // primitive type
+  
+  float rowInc = triangleHeight + lineSpace;
+  float collumnInc = triangleWidth + lineSpace;
+  
+  GLfloat vertexPositions[totalVerts*3];
+
+  float currentYInc = 0;
+  float currentXInc = 0;
+  for(int i = 0; i < totalVerts*3; i+=3) {
+    int trianglePlace = i % 18;
+
+    if(trianglePlace == 0) {
+      vertexPositions[i] =  currentXInc+ lineSpace;
+      vertexPositions[i+1] =  currentYInc+ lineSpace;
+      vertexPositions[i+2] = depth+ 0.005;
+    }
+
+    if(trianglePlace == 3 || trianglePlace == 9) {
+      vertexPositions[i] = triangleWidth + currentXInc + lineSpace;
+      vertexPositions[i+1] = currentYInc +lineSpace;
+      vertexPositions[i+2] = depth+0.005;
+    }
+
+    if(trianglePlace == 6 || trianglePlace == 12) {
+      vertexPositions[i] =  currentXInc + lineSpace;
+      vertexPositions[i+1] = currentYInc + triangleHeight + lineSpace;
+      vertexPositions[i+2] = depth+0.005;
+    }
+    
+    if(trianglePlace == 15) {
+      vertexPositions[i] = currentXInc + triangleWidth + lineSpace;
+      vertexPositions[i+1] = triangleHeight + currentYInc + lineSpace;
+      vertexPositions[i+2] = depth+0.005;
+      currentXInc += triangleWidth + lineSpace;
+      windowCount++;
+      
+      printf("window count: %d\nrows: %d\n", windowCount, rows);
+      if(windowCount >= rows) {
+	currentXInc = 0;
+	currentYInc += triangleHeight + lineSpace;
+	windowCount = 0;
+      }
+    }
+  }
+  
+
+  kuhl_geometry_attrib(geom, vertexPositions, // data
+		       3, // number of components (x,y,z)
+		       "in_Position", // GLSL variable
+		       KG_WARN); // warn if attribute is missing in GLSL program?
+  
+  GLfloat colorData[totalVerts*3];
+  for(int i = 0; i < totalVerts*3; i++) {
+    colorData[i] = 0;
+  }
+  kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
+}
+
+
 void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float depth,
 			   float height, float seed)
 {
@@ -197,6 +275,25 @@ void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float 
 	/* Vertices that we want to form triangles out of. Every 3 numbers
 	 * is a vertex position. Since no indices are provided, every
 	 * three vertex positions form a single triangle.*/
+
+	//Find the amount of windows that can fit in each face
+	//Windows will be 0.5 by 0.5
+	/*
+	float triangleWidth = 0.5;
+	float trianlgeHeight = 0.5;
+	//Small line between triangles
+	float lineSpace = 0.05;
+	int rows = height / (triangleHeight + lineSpace);
+	int collumns = width / (triangleWidth + lineSpace);
+	int windows = rows * collumns;
+	//3 verts per triangle, 2 triangles per window, rows*collumns windows
+	
+	// 3 verts per triangle, 2 triagles per face, 6 faces
+	//36 verts
+	int totalVerts = 36 * (windows * 2 * 3);
+	*/
+	//init_windowGrid(&windows, program, 2, 2, 6, 4);
+	
 	//                         Face 1 Front
 	//                         Triangle 1
 	GLfloat vertexPositions[] ={0, 0, 0,
@@ -255,60 +352,60 @@ void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float 
 	                     3, // number of components (x,y,z)
 	                     "in_Position", // GLSL variable
 	                     KG_WARN); // warn if attribute is missing in GLSL program?
-
+	
 	/* The colors of each of the vertices */
-	GLfloat colorData[] = {0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+	GLfloat colorData[] = {0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //triangle 2
-			       0, 0, 0,
-			       0, 1, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Face2
 			       //Triangle 1
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Triangle 2
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Face 3
 			       //Triangle 1
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Triangle 2
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Face 4
 			       //Triangle 1
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Triangle 2
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Face 5
 			       //Triangle 1
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Triangle 2
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Face 6
 			       //Triangle 1
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
 			       //Triangle 2
-			       0, 0, 0,
-			       1, 0, 0,
-			       1, 1, 0};
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5,
+			       0.5, 0.5, 0.5};
 	kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
 }
 
@@ -321,7 +418,7 @@ int main(int argc, char** argv)
 	glfwSetKeyCallback(kuhl_get_window(), keyboard);
 	// glfwSetFramebufferSizeCallback(window, reshape);
 
-	/* Compile and link a GLSL program composed of a vertex shader and
+	/* Compile and link a GLSL program comxposed of a vertex shader and
 	 * a fragment shader. */
 	program = kuhl_create_program("triangle-color.vert", "triangle-color.frag");
 
@@ -335,8 +432,10 @@ int main(int argc, char** argv)
 
 	/* Create kuhl_geometry structs for the objects that we want to
 	 * draw. */
-	init_geometryBuilding(&building, program, 1, 1, 1, 4);
-
+	
+	init_geometryBuilding(&building, program, 2, 2, 6, 4);
+	init_windowGrid(&windows, program, 2, 2, 6, 4);
+	
 	dgr_init();     /* Initialize DGR based on config file. */
 
 	float initCamPos[3]  = {0,0,10}; // location of camera
