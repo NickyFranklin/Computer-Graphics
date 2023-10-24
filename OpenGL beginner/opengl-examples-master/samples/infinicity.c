@@ -17,11 +17,13 @@
 #include <GLFW/glfw3.h>
 
 static GLuint program = 0; /**< id value for the GLSL program */
+static GLuint program2 = 1;
 
 static kuhl_geometry building;
 static kuhl_geometry windows;
 static kuhl_geometry complexBuilding;
 static kuhl_geometry windows2;
+static kuhl_geometry road1;
 int isForward = 0;
 int isBackward = 0;
 int isNew = 1;
@@ -176,6 +178,22 @@ void display()
 		kuhl_geometry_draw(&windows);
 		kuhl_geometry_draw(&complexBuilding);
 		kuhl_geometry_draw(&windows2);
+		glUseProgram(0);
+
+
+		glUseProgram(program2);
+		
+		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   perspective); // value
+		/* Send the modelview matrix to the vertex program. */
+		
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&road1);
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
 		 * to change the ModelView matrix and then call
@@ -391,7 +409,9 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
   for(int i = 0; i < totalVerts*3*2+wideTotalVerts*3*2; i++) {
     colorData[i] = 0;
   }
+  float isTextured = 0;
   kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
+  //kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
 }
 
 void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
@@ -596,6 +616,8 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
     colorData[i] = 0;
   }
   kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
+  float isTextured = 0;
+  //kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
 }
 
 
@@ -724,6 +746,8 @@ void init_geometryComplexBuilding(kuhl_geometry *geom, GLuint prog, float width,
 			       0.5, 0.5, 0.5,
 			       0.5, 0.5, 0.5};
 	kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
+	float isTextured = 0;
+	//	kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
 }
 
 void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float depth,
@@ -849,6 +873,35 @@ void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float 
 			       0.5, 0.5, 0.5,
 			       0.5, 0.5, 0.5};
 	kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
+	float isTextured = 0;
+	//	kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
+}
+
+void init_geometryRoad(kuhl_geometry *geom, GLuint prog)
+{ 
+  kuhl_geometry_new(geom, prog, 4, GL_TRIANGLES);
+  GLfloat vertexPositions[] = {0, 0, 0,
+			       10, 0, 0,
+			       0, 0, 10,
+			       10, 0, 10};
+  kuhl_geometry_attrib(geom, vertexPositions, 3, "in_Position", KG_WARN);
+  GLuint indexData[] = {0,1,3,
+			0,2,3};
+  kuhl_geometry_indices(geom, indexData, 6);
+  
+  
+  GLfloat texcoordData[] = {0,0,
+			    10,0,
+			    0,10,
+			    10,10};
+  
+  kuhl_geometry_attrib(geom, texcoordData, 2, "in_TexCoord", KG_WARN);
+  
+  GLuint texId = 0;
+  kuhl_read_texture_file_wrap("../images/rainbow.png", &texId, GL_REPEAT, GL_REPEAT);
+  kuhl_geometry_texture(geom,texId, "tex", KG_WARN);
+
+  kuhl_errorcheck();
 }
 
 int main(int argc, char** argv)
@@ -862,8 +915,8 @@ int main(int argc, char** argv)
 
 	/* Compile and link a GLSL program comxposed of a vertex shader and
 	 * a fragment shader. */
-	program = kuhl_create_program("triangle-color.vert", "triangle-color.frag");
-
+ 	program = kuhl_create_program("triangle-color.vert", "triangle-color.frag");
+	program2 = kuhl_create_program("texture.vert", "texture.frag");
 	/* Use the GLSL program so subsequent calls to glUniform*() send the variable to
 	   the correct program. */
 	glUseProgram(program);
@@ -875,10 +928,11 @@ int main(int argc, char** argv)
 	/* Create kuhl_geometry structs for the objects that we want to
 	 * draw. */
 	
-	init_geometryBuilding(&building, program, 4, 4, 6, 4);
-	init_windowGrid(&windows, program, 4, 4, 6, 4);
-	init_geometryComplexBuilding(&complexBuilding, program, 2, 2, 4, 4, 4, 6, 4);
-	init_complexWindowGrid(&windows2, program, 2, 2, 4, 4, 4, 6, 4);
+	init_geometryBuilding(&building, program, 4, 8, 6, 4);
+	init_windowGrid(&windows, program, 4, 8, 6, 4);
+	init_geometryComplexBuilding(&complexBuilding, program, 4, 2, 4, 4, 8, 6, 4);
+	init_complexWindowGrid(&windows2, program, 4, 2, 4, 4, 8, 6, 4);
+	init_geometryRoad(&road1, program2);
 	dgr_init();     /* Initialize DGR based on config file. */
 
 	float initCamPos[3]  = {0,0,10}; // location of camera

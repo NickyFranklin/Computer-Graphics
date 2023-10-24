@@ -548,7 +548,7 @@ void init_roof(kuhl_geometry *geom, GLuint prog) {
 /* This illustrates how to draw a quad by drawing two triangles and reusing vertices. */
 void init_geometryQuad(kuhl_geometry *geom, GLuint prog)
 {
-	kuhl_geometry_new(geom, prog,
+  kuhl_geometry_new(geom, prog,
 	                  4, // number of vertices
 	                  GL_TRIANGLES); // type of thing to draw
 
