@@ -29,6 +29,8 @@ int isBackward = 0;
 int isNew = 1;
 float transMat[16];
 float translation = 0;
+int zOrigin = 1;
+int groundShift = 0;
 
 /* Called by GLFW whenever a key is pressed. */
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -136,13 +138,25 @@ void display()
 		}
 
 		if(isForward) {
-		  translation = translation + 0.1f;
+		  translation = translation + 0.05f;
 		}
 
 		else if(isBackward) {
-		  translation = translation - 0.1f;
+		  translation = translation - 0.05f;
 		}
-		mat4f_translate_new(transMat, 0, -3, translation);
+		
+		printf("%f\n", translation);
+		printf("%d\n", groundShift);
+		groundShift = translation;
+		if(groundShift > zOrigin) {
+		  zOrigin++; 
+		}
+
+		if(groundShift < zOrigin) {
+		  zOrigin--;
+		}
+		float startpos = -1;
+		mat4f_translate_new(transMat, 0, startpos, translation-(float) zOrigin);
 		/* Last parameter must be NULL, otherwise your program
 		   can/will crash. The modelview matrix is (the view matrix) *
 		   (the model matrix). Here, we have two matrices in the model
@@ -158,28 +172,6 @@ void display()
 		/* Tell OpenGL which GLSL program the subsequent
 		 * glUniformMatrix4fv() calls are for. */
 		kuhl_errorcheck();
-		glUseProgram(program);
-		kuhl_errorcheck();
-		
-		/* Send the perspective projection matrix to the vertex program. */
-		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   perspective); // value
-		/* Send the modelview matrix to the vertex program. */
-		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		kuhl_errorcheck();
-		/* Draw the geometry using the matrices that we sent to the
-		 * vertex programs immediately above */
-		kuhl_geometry_draw(&building);
-		kuhl_geometry_draw(&windows);
-		kuhl_geometry_draw(&complexBuilding);
-		kuhl_geometry_draw(&windows2);
-		glUseProgram(0);
-
 
 		glUseProgram(program2);
 		
@@ -194,6 +186,61 @@ void display()
 		                   0, // transpose
 		                   modelview); // value
 		kuhl_geometry_draw(&road1);
+		glUseProgram(0);
+		kuhl_errorcheck();
+		glUseProgram(program);
+		/* Send the perspective projection matrix to the vertex program. */
+		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   perspective); // value
+		/* Send the modelview matrix to the vertex program. */
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_errorcheck();
+		/* Draw the geometry using the matrices that we sent to the
+		 * vertex programs immediately above */
+		//startpos = -10;
+		mat4f_translate_new(transMat, 0.33, startpos, translation);
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
+
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		
+		kuhl_geometry_draw(&building);
+		kuhl_geometry_draw(&windows);
+		//startpos = -10;
+		mat4f_translate_new(transMat, 0.33, startpos, translation+1);
+		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
+		
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+
+		kuhl_geometry_draw(&complexBuilding);
+		kuhl_geometry_draw(&windows2);
+		glUseProgram(0);
+
+		/*
+		glUseProgram(program2);
+		
+		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   perspective); // value
+		/* Send the modelview matrix to the vertex program. 
+		
+		glUniformMatrix4f(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_geometry_draw(&road1);
+		*/
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
 		 * to change the ModelView matrix and then call
@@ -215,10 +262,10 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 		     float height, float seed) {
   //Find the amount of windows that can fit in each face
   //Windows will be 0.5 by 0.5
-  float triangleWidth = 0.5;
-  float triangleHeight = 0.5;
+  float triangleWidth = 0.05;
+  float triangleHeight = 0.05;
   //Small line between triangles
-  float lineSpace = 0.07;
+  float lineSpace = 0.007;
   int rows = width / (triangleHeight + lineSpace);
   int collumns = height / (triangleWidth + lineSpace);
   int wideRows = depth / (triangleWidth + lineSpace);
@@ -419,10 +466,10 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 			    float bottomDepth, float bottomHeight,float seed) {
   //Find the amount of windows that can fit in each face
   //Windows will be 0.5 by 0.5
-  float triangleWidth = 0.5;
-  float triangleHeight = 0.5;
+  float triangleWidth = 0.05;
+  float triangleHeight = 0.05;
   //Small line between triangles
-  float lineSpace = 0.07;
+  float lineSpace = 0.007;
   int rows = width / (triangleHeight + lineSpace);
   int collumns = height / (triangleWidth + lineSpace);
   int wideRows = depth / (triangleWidth + lineSpace);
@@ -880,9 +927,9 @@ void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float 
 void init_geometryRoad(kuhl_geometry *geom, GLuint prog)
 { 
   kuhl_geometry_new(geom, prog, 4, GL_TRIANGLES);
-  GLfloat vertexPositions[] = {0, 0, 0,
+  GLfloat vertexPositions[] = {-10, 0, 0,
 			       10, 0, 0,
-			       0, 0, 10,
+			       -10, 0, 10,
 			       10, 0, 10};
   kuhl_geometry_attrib(geom, vertexPositions, 3, "in_Position", KG_WARN);
   GLuint indexData[] = {0,1,3,
@@ -898,7 +945,7 @@ void init_geometryRoad(kuhl_geometry *geom, GLuint prog)
   kuhl_geometry_attrib(geom, texcoordData, 2, "in_TexCoord", KG_WARN);
   
   GLuint texId = 0;
-  kuhl_read_texture_file_wrap("../images/rainbow.png", &texId, GL_REPEAT, GL_REPEAT);
+  kuhl_read_texture_file_wrap("../images/road.png", &texId, GL_REPEAT, GL_REPEAT);
   kuhl_geometry_texture(geom,texId, "tex", KG_WARN);
 
   kuhl_errorcheck();
@@ -908,7 +955,7 @@ int main(int argc, char** argv)
 {
 	/* Initialize GLFW and GLEW */
 	kuhl_ogl_init(&argc, argv, -1, -1, 32, 4);
-
+	//Offset from road is 0.17
 	/* Specify function to call when keys are pressed. */
 	glfwSetKeyCallback(kuhl_get_window(), keyboard);
 	// glfwSetFramebufferSizeCallback(window, reshape);
@@ -927,15 +974,16 @@ int main(int argc, char** argv)
 
 	/* Create kuhl_geometry structs for the objects that we want to
 	 * draw. */
-	
-	init_geometryBuilding(&building, program, 4, 8, 6, 4);
-	init_windowGrid(&windows, program, 4, 8, 6, 4);
-	init_geometryComplexBuilding(&complexBuilding, program, 4, 2, 4, 4, 8, 6, 4);
-	init_complexWindowGrid(&windows2, program, 4, 2, 4, 4, 8, 6, 4);
+	//Max depth is 0.83
+	//Max width is 1.65
+	init_geometryBuilding(&building, program, 0.5, 0.5, 6, 4);
+	init_windowGrid(&windows, program, 0.5, 0.5, 6, 4);
+	init_geometryBuilding(&complexBuilding, program, 1.65, 0.83, 6, 4);
+	init_windowGrid(&windows2, program, 1.65, 0.83, 6, 4);
 	init_geometryRoad(&road1, program2);
 	dgr_init();     /* Initialize DGR based on config file. */
 
-	float initCamPos[3]  = {0,0,10}; // location of camera
+	float initCamPos[3]  = {0,0,35}; // location of camera
 	float initCamLook[3] = {0,0,0}; // a point the camera is facing at
 	float initCamUp[3]   = {0,1,0}; // a vector indicating which direction is up
 	viewmat_init(initCamPos, initCamLook, initCamUp);
