@@ -1,0 +1,651 @@
+[INFO ] Writing messages into 'log.txt'
+[INFO ] GLSL prog 1: Creating vertex (triangle-color.vert) & fragment (triangle-color.frag) shaders
+[INFO ] GLSL prog 1: Active attributes: in_Position@0 in_Color@1 
+[INFO ] GLSL prog 1: Active uniforms: ModelView@0 Projection@1 
+[INFO ] GLSL prog 1: AttachedShaderCount=2 Size=5017 
+[INFO ] GLSL prog 4: Creating vertex (texture.vert) & fragment (texture.frag) shaders
+[INFO ] GLSL prog 4: Active attributes: in_Position@0 in_TexCoord@1 
+[INFO ] GLSL prog 4: Active uniforms: ModelView@0 Projection@1 tex@2 
+[INFO ] GLSL prog 4: AttachedShaderCount=2 Size=5169 
+0.100000 0.378059 8.358172 
+0.100000 0.100000 1.876895 
+0
+1.507164 0.132869 5.742628 
+0.835479 0.100000 6.830849 
+1
+1.293988 0.717679 3.127084 
+0.702162 0.312259 1.784802 
+0
+1.080812 0.472489 1.000000 
+0.573881 0.307962 6.738756 
+1
+0.867635 0.227299 7.895995 
+0.450637 0.197759 1.692710 
+0
+0.654459 0.812109 5.280451 
+0.332430 0.100000 6.646663 
+1
+0.441283 0.566919 2.664906 
+0.219261 0.169700 1.600617 
+0
+0.228107 0.321729 1.000000 
+0.111128 0.166221 6.554571 
+1
+0.100000 0.100000 7.433817 
+[WARN ] You are creating a geometry object with a vertexCount of 0.
+0.100000 0.100000 1.508524 
+0
+1.451754 0.661349 4.818273 
+0.667591 0.626290 6.462478 
+1
+1.238578 0.416160 2.202728 
+0.555076 0.100000 1.416432 
+1
+1.025402 0.170970 9.587184 
+0.447598 0.100000 6.370385 
+0
+0.812226 0.755780 6.971640 
+0.345156 0.449464 1.324339 
+1
+0.599050 0.510590 4.356095 
+0.247752 0.414244 6.278293 
+0
+0.385873 0.265400 1.740551 
+0.155385 0.100000 1.232246 
+1
+0.172697 0.100000 9.125007 
+0.100000 0.100000 6.186200 
+0
+1.609521 0.605020 6.509462 
+0.606926 0.277645 1.140153 
+1
+1.396345 0.359830 3.893918 
+0.510177 0.243244 6.094107 
+0
+1.183169 0.114640 1.278373 
+0.418464 0.102936 1.048061 
+1
+0.969992 0.699450 8.662828 
+0.331788 0.100000 6.002014 
+0
+0.756816 0.454260 6.047285 
+0.250149 0.146872 1.000000 
+1
+0.543640 0.209071 3.431740 
+0.173548 0.113289 5.909922 
+0
+0.330464 0.793881 1.000000 
+0.101983 0.598836 1.000000 
+1
+0.117288 0.548691 8.200651 
+0.100000 0.532694 5.817829 
+0
+1.554111 0.303501 5.585107 
+0.439183 0.100000 1.000000 
+1
+1.340935 0.100000 2.969563 
+0.363236 0.100000 5.725736 
+1
+1.127759 0.643121 1.000000 
+0.292326 0.397758 1.000000 
+0
+0.914583 0.397931 7.738474 
+0.226453 0.332434 5.633643 
+1
+0.701407 0.152741 5.122930 
+0.165616 0.100000 1.000000 
+0
+0.488231 0.737551 2.507385 
+0.109817 0.196325 5.541551 
+1
+0.275054 0.492361 9.891841 
+0.100000 0.237726 1.000000 
+0
+0.100000 0.247171 7.276297 
+0.100000 0.173220 5.449458 
+1
+1.498702 0.100000 4.660752 
+0.281914 0.100000 1.000000 
+0
+1.285526 0.586792 2.045208 
+0.226769 0.100000 5.357365 
+1
+1.072350 0.341602 9.429664 
+0.176661 0.118739 1.000000 
+0
+0.859173 0.100000 6.814119 
+0.131591 0.100000 5.265273 
+1
+0.645997 0.681222 4.198575 
+0.100000 0.530038 1.000000 
+0
+0.432821 0.436032 1.583030 
+0.100000 0.433792 5.173180 
+1
+0.219645 0.190842 8.967486 
+0.100000 0.100000 1.000000 
+0
+0.100000 0.775652 6.351942 
+0.100000 0.330268 5.081087 
+0
+1.443292 0.530462 3.736397 
+0.135118 0.340747 1.000000 
+1
+1.230116 0.285272 1.120853 
+0.100776 0.245319 4.988994 
+0
+1.016940 0.100000 8.505308 
+0.100000 0.100000 9.942947 
+1
+0.803764 0.624892 5.889764 
+0.100000 0.181204 4.896902 
+0
+0.590588 0.379702 3.274220 
+0.100000 0.192501 9.850855 
+1
+0.377411 0.134513 1.000000 
+0.100000 0.100000 4.804809 
+0
+0.164235 0.719323 8.043131 
+0.100000 0.674487 9.758762 
+1
+1.601059 0.474133 5.427587 
+0.100000 0.100000 4.712716 
+0
+1.387883 0.228943 2.812042 
+1.386680 0.100000 9.666670 
+1
+1.174707 0.813753 1.000000 
+1.159964 0.476380 4.620623 
+0
+0.961531 0.568563 7.580953 
+0.938285 0.455935 9.574577 
+1
+0.748354 0.323373 4.965409 
+0.721643 0.100000 4.528531 
+0
+0.535178 0.100000 2.349865 
+0.510038 0.100000 9.482484 
+1
+0.322002 0.662993 9.734320 
+0.303470 0.298056 4.436438 
+0
+0.108826 0.417803 7.118776 
+0.101939 0.278430 9.390391 
+0
+1.545650 0.172613 4.503232 
+1.416373 0.152898 4.344345 
+1
+1.332473 0.757423 1.887687 
+1.205422 0.100000 9.298299 
+0
+1.119297 0.512234 9.272142 
+0.999509 0.160778 4.252253 
+1
+0.906121 0.267044 6.656599 
+0.798632 0.141970 9.206206 
+0
+0.692945 0.100000 4.041054 
+0.602793 0.100000 4.160160 
+1
+0.479769 0.606664 1.425510 
+0.411991 0.583292 9.114113 
+0
+0.266592 0.361474 8.809965 
+0.226225 0.100000 4.068067 
+1
+0.100000 0.116284 6.194421 
+0.100000 0.100000 9.022020 
+0
+1.490240 0.701094 3.578876 
+1.224786 0.427075 3.975974 
+1
+1.277064 0.455904 1.000000 
+1.034639 0.376527 8.929928 
+0
+1.063888 0.210714 8.347788 
+0.849528 0.100000 3.883882 
+1
+0.850712 0.795524 5.732244 
+0.669454 0.204362 8.837835 
+0
+0.637535 0.550334 3.116699 
+0.494417 0.260538 3.791789 
+1
+0.424359 0.305145 1.000000 
+0.324417 0.210807 8.745743 
+1
+0.211183 0.100000 7.885611 
+0.159454 0.100000 3.699696 
+0
+1.648007 0.644765 5.270066 
+1.218057 0.100000 8.653649 
+1
+1.434831 0.399575 2.654521 
+1.043674 0.135045 3.607603 
+0
+1.221654 0.154385 1.000000 
+0.874329 0.100000 8.561557 
+1
+1.008478 0.739195 7.423433 
+0.710021 0.568262 3.515511 
+0
+0.795302 0.494005 4.807889 
+0.550749 0.486791 8.469464 
+1
+0.582126 0.248815 2.192344 
+0.396515 0.100000 3.423418 
+0
+0.368950 0.100000 9.576799 
+0.247317 0.100000 8.377372 
+1
+0.155773 0.588435 6.961255 
+0.103157 0.372465 3.331325 
+0
+1.592597 0.343245 4.345711 
+1.026616 0.291813 8.285278 
+1
+1.379421 0.100000 1.730167 
+0.873036 0.100000 3.239232 
+0
+1.166245 0.682866 9.114622 
+0.724493 0.191642 8.193186 
+1
+0.953069 0.437676 6.499078 
+0.580987 0.217714 3.147140 
+0
+0.739892 0.192486 3.883533 
+0.442518 0.137879 8.101093 
+1
+0.526716 0.777296 1.267989 
+0.309086 0.721617 3.055047 
+1
+0.313540 0.532106 8.652445 
+0.180691 0.100000 8.009001 
+0
+0.100364 0.286916 6.036901 
+0.100000 0.104008 2.962954 
+1
+1.537188 0.100000 3.421356 
+0.845648 0.100000 7.916908 
+0
+1.324011 0.626536 1.000000 
+0.712871 0.496560 2.870862 
+1
+1.110835 0.381346 8.190268 
+0.585131 0.100000 7.824815 
+0
+0.897659 0.136156 5.574723 
+0.462427 0.100000 2.778769 
+1
+0.684483 0.720966 2.959178 
+0.344761 0.317400 7.732722 
+0
+0.471307 0.475776 1.000000 
+0.232132 0.312550 2.686676 
+1
+0.258131 0.230587 7.728090 
+0.124539 0.201793 7.640630 
+0
+0.100000 0.815397 5.112545 
+0.100000 0.100000 2.594583 
+1
+1.481778 0.570207 2.497001 
+0.675155 0.173617 7.548537 
+0
+1.268602 0.325017 9.881456 
+0.563180 0.169584 2.502491 
+1
+1.055426 0.100000 7.265912 
+0.456243 0.100000 7.456444 
+0
+0.842250 0.664637 4.650368 
+0.354342 0.632823 2.410398 
+0
+0.629073 0.419447 2.034823 
+0.257478 0.100000 7.364351 
+1
+0.415897 0.174257 9.419279 
+0.165651 0.100000 2.318305 
+0
+[INFO ] viewmat display mode: Single window desktop mode.
+[INFO ] viewmat control mode: Mouse movement
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
+[WARN ] You tried to draw geometry which contained 0 vertices.
