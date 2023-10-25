@@ -769,6 +769,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 		       KG_WARN); // warn if attribute is missing in GLSL program? 
   //GLfloat colorData[totalVerts*3*2 + wideTotalVerts*3*2];
   for(int i = 0; i < totalVerts*3*2+wideTotalVerts*3*2; i+=18) {
+    srand48(i);
     if(drand48() < 0.3) {
       colorData[i] = 1;
       colorData[i+1] = 1;
@@ -1169,9 +1170,11 @@ void display()
 		  zOrigin++; 
 		}
 		*/
+		/*
 		if(groundShift < zOrigin) {
 		  zOrigin--;
 		}
+		*/
 		float startpos = -1;
 		mat4f_translate_new(transMat, 0, startpos, translation-(float) zOrigin);
 		/* Last parameter must be NULL, otherwise your program
@@ -1220,34 +1223,39 @@ void display()
 		/* Draw the geometry using the matrices that we sent to the
 		 * vertex programs immediately above */
 		//startpos = -10;
-	        if(groundShift > zOrigin) {
-		  zOrigin++;
-		  for(int i = 9; i > -1; i--) {
-		    for(int j = 9; j > -1; j--) {
-		      seed = i*i + j*j + zOrigin*7;
-		      if(i == 10) {
+		if(groundShift < zOrigin) {
+		  zOrigin--;
+		  for(int i = 0; i < 10; i++) {
+		    for(int j = 0; j < 10; j++) {
+		      //seed = zOrigin;
+		      //printf("%d seed\n", seed);
+		      //srand(seed);
+		      if(i == -1) {
 			kuhl_geometry_delete(&buildingBottom[i][j]);
 			kuhl_geometry_delete(&buildingTop[i][j]);
 			kuhl_geometry_delete(&windowBottom[i][j]);
 			kuhl_geometry_delete(&windowTop[i][j]);
 		      }
-		      if(i!=0) {
-			buildingBottom[i][j] = buildingBottom[i-1][j];
-			windowBottom[i][j] = windowBottom[i-1][j];
-			windowTop[i][j] = windowTop[i-1][j];
-			buildingTop[i][j] = buildingTop[i-1][j];
-			isComplex[i][j] = isComplex[i-1][j];
+		      if(i!=9) {
+			buildingBottom[i][j] = buildingBottom[i+1][j];
+			windowBottom[i][j] = windowBottom[i+1][j];
+			windowTop[i][j] = windowTop[i+1][j];
+			buildingTop[i][j] = buildingTop[i+1][j];
+			isComplex[i][j] = isComplex[i+1][j];
 		      }
 
 		      else {
+			seed = zOrigin;
+			printf("%d seed\n", seed);
+			srand48(i+j);
 			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
-			if(bottomWidth < 0.1) {
+			if(bottomWidth < 0.15) {
 			  bottomWidth = 0.15;
 			}
 			bottomDepth = drand48()+0.001;
 			bottomDepth *= maxDepth;
-			if(bottomDepth < 0.1) {
+			if(bottomDepth < 0.15) {
 			  bottomDepth = 0.15;
 			}
 			bottomHeight = drand48()+0.001;
@@ -1260,11 +1268,12 @@ void display()
 					      bottomWidth, bottomDepth, bottomHeight, seed);
 			init_windowGrid(&windowBottom[i][j], program,
 					bottomWidth, bottomDepth, bottomHeight, seed);
-			complex = drand48() * 2;
+			srand48(i+j);
+			complex = 2;//drand48() * 2;
 			
-			topWidth = drand48() * bottomWidth+0.001;
-			topDepth = drand48() * bottomDepth+0.001;
-			topHeight = drand48() * 10+0.001;
+			topWidth = 0.5;//drand48() * bottomWidth+0.001;
+			topDepth = 0.5;//drand48() * bottomDepth+0.001;
+			topHeight = 0.5;//drand48() * 10+0.001;
 			if(topWidth > bottomWidth || topWidth < 0.1) {
 			  topWidth = bottomWidth;
 			}
@@ -1287,11 +1296,87 @@ void display()
 		      
 		    }
 		  }
+
+		  
+		}
+
+
+		
+	        if(groundShift > zOrigin) {
+		  zOrigin++;
+		  for(int i = 9; i > -1; i--) {
+		    for(int j = 9; j > -1; j--) {
+		      //seed = zOrigin;
+		      //printf("%d seed\n", seed);
+		      if(i == 10) {
+			kuhl_geometry_delete(&(buildingBottom[i][j]));
+			kuhl_geometry_delete(&(buildingTop[i][j]));
+			kuhl_geometry_delete(&(windowBottom[i][j]));
+			kuhl_geometry_delete(&(windowTop[i][j]));
+		      }
+		      if(i!=0) {
+			buildingBottom[i][j] = buildingBottom[i-1][j];
+			windowBottom[i][j] = windowBottom[i-1][j];
+			windowTop[i][j] = windowTop[i-1][j];
+			buildingTop[i][j] = buildingTop[i-1][j];
+			isComplex[i][j] = isComplex[i-1][j];
+		      }
+
+		      else {
+			seed = zOrigin;
+			printf("%d seed\n", seed);
+			srand48(i+j);
+			bottomWidth = 0.5;//drand48()+0.001;
+			bottomWidth *= maxWidth;
+			if(bottomWidth < 0.15) {
+			  bottomWidth = 0.15;
+			}
+			bottomDepth = 0.5;//drand48()+0.001;
+			bottomDepth *= maxDepth;
+			if(bottomDepth < 0.15) {
+			  bottomDepth = 0.15;
+			}
+			bottomHeight = 0.5;//drand48()+0.001;
+			bottomHeight *= 10;
+			if(bottomHeight < 1) {
+			  bottomHeight = 1;
+			}
+			printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
+			init_geometryBuilding(&buildingBottom[i][j], program,
+					      bottomWidth, bottomDepth, bottomHeight, seed);
+			init_windowGrid(&windowBottom[i][j], program,
+					bottomWidth, bottomDepth, bottomHeight, seed);
+			srand48(i+j);
+			complex = 2;//drand48() * 2;
+			
+			topWidth = 0.5;//drand48() * bottomWidth+0.001;
+			topDepth = 0.5;//drand48() * bottomDepth+0.001;
+			topHeight = 0.5;//drand48() * 10+0.001;
+			if(topWidth > bottomWidth || topWidth < 0.1) {
+			  topWidth = bottomWidth;
+			}
+			if(topDepth > bottomDepth || topDepth < 0.1) {
+			  topDepth = bottomDepth;
+			}
+			if(topHeight < 1) {
+			  topHeight = 1;
+			}
+			printf("%f %f %f \n", topWidth, topDepth, topHeight);
+			init_geometryComplexBuilding(&buildingTop[i][j], program,
+						     topWidth, topDepth, topHeight,
+						     bottomWidth, bottomDepth, bottomHeight, seed);
+			init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
+					       bottomWidth, bottomDepth, bottomHeight, seed);
+			
+			printf("%d\n", complex);
+			isComplex[i][j] = complex;
+		      
+		      }
+		      
+		    }
+		  }
 		}
 		
-		if(groundShift < zOrigin) {
-		  zOrigin--;
-		}
 		
 		for(int i = 0; i < 10; i++) {
 		  for(int j = 0; j < 10; j++) {
@@ -1422,18 +1507,19 @@ int main(int argc, char** argv)
 					 bottomWidth, bottomDepth, bottomHeight, 1);
 	    isComplex[i][j] = complex;
 	    */
-	    srand48(i*i+j*j+seed*7);
-	    bottomWidth = drand48()+0.001;
+	    seed = i + j; 
+	    srand48(seed);
+	    bottomWidth = 0.5;//drand48()+0.001;
 	    bottomWidth *= maxWidth;
-	    if(bottomWidth < 0.1) {
+	    if(bottomWidth < 0.15) {
 	      bottomWidth = 0.15;
 	    }
-	    bottomDepth = drand48()+0.001;
+	    bottomDepth = 0.5;//drand48()+0.001;
 	    bottomDepth *= maxDepth;
-	    if(bottomDepth < 0.1) {
+	    if(bottomDepth < 0.15) {
 	      bottomDepth = 0.15;
 	    }
-	    bottomHeight = drand48()+0.001;
+	    bottomHeight = 0.5;//drand48()+0.001;
 	    bottomHeight *= 10;
 	    if(bottomHeight < 1) {
 	      bottomHeight = 1;
@@ -1443,11 +1529,12 @@ int main(int argc, char** argv)
 				  bottomWidth, bottomDepth, bottomHeight, seed);
 	    init_windowGrid(&windowBottom[i][j], program,
 			    bottomWidth, bottomDepth, bottomHeight, seed);
-	    complex = drand48() * 2;
+	    srand48(seed);
+	    complex = 2;//drand48() * 2;
 	  
-	    topWidth = drand48() * bottomWidth+0.001;
-	    topDepth = drand48() * bottomDepth+0.001;
-	    topHeight = drand48() * 10+0.001;
+	    topWidth = 0.5;//drand48() * bottomWidth+0.001;
+	    topDepth = 0.5;//drand48() * bottomDepth+0.001;
+	    topHeight = 0.5;//drand48() * 10+0.001;
 	    if(topWidth > bottomWidth || topWidth < 0.1) {
 	      topWidth = bottomWidth;
 	    }
@@ -1466,7 +1553,6 @@ int main(int argc, char** argv)
 	    
 	    printf("%d\n", complex);
 	    isComplex[i][j] = complex;
-	    seed++;
 	  }
 	}
 	
