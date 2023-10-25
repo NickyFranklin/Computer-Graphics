@@ -769,7 +769,6 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 		       KG_WARN); // warn if attribute is missing in GLSL program? 
   //GLfloat colorData[totalVerts*3*2 + wideTotalVerts*3*2];
   for(int i = 0; i < totalVerts*3*2+wideTotalVerts*3*2; i+=18) {
-    srand48(i);
     if(drand48() < 0.3) {
       colorData[i] = 1;
       colorData[i+1] = 1;
@@ -1245,7 +1244,7 @@ void display()
 		      }
 
 		      else {
-			seed = zOrigin;
+			seed = i+j;
 			printf("%d seed\n", seed);
 			srand48(i+j);
 			bottomWidth = drand48()+0.001;
@@ -1268,12 +1267,12 @@ void display()
 					      bottomWidth, bottomDepth, bottomHeight, seed);
 			init_windowGrid(&windowBottom[i][j], program,
 					bottomWidth, bottomDepth, bottomHeight, seed);
-			srand48(i+j);
-			complex = 2;//drand48() * 2;
 			
-			topWidth = 0.5;//drand48() * bottomWidth+0.001;
-			topDepth = 0.5;//drand48() * bottomDepth+0.001;
-			topHeight = 0.5;//drand48() * 10+0.001;
+			complex = drand48() * 2;
+			
+			topWidth = drand48() * bottomWidth+0.001;
+			topDepth = drand48() * bottomDepth+0.001;
+			topHeight = drand48() * 10+0.001;
 			if(topWidth > bottomWidth || topWidth < 0.1) {
 			  topWidth = bottomWidth;
 			}
@@ -1323,20 +1322,20 @@ void display()
 		      }
 
 		      else {
-			seed = zOrigin;
+			seed = i+j;
 			printf("%d seed\n", seed);
 			srand48(i+j);
-			bottomWidth = 0.5;//drand48()+0.001;
+			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
 			if(bottomWidth < 0.15) {
 			  bottomWidth = 0.15;
 			}
-			bottomDepth = 0.5;//drand48()+0.001;
+			bottomDepth = drand48()+0.001;
 			bottomDepth *= maxDepth;
 			if(bottomDepth < 0.15) {
 			  bottomDepth = 0.15;
 			}
-			bottomHeight = 0.5;//drand48()+0.001;
+			bottomHeight = drand48()+0.001;
 			bottomHeight *= 10;
 			if(bottomHeight < 1) {
 			  bottomHeight = 1;
@@ -1346,12 +1345,12 @@ void display()
 					      bottomWidth, bottomDepth, bottomHeight, seed);
 			init_windowGrid(&windowBottom[i][j], program,
 					bottomWidth, bottomDepth, bottomHeight, seed);
-			srand48(i+j);
-			complex = 2;//drand48() * 2;
 			
-			topWidth = 0.5;//drand48() * bottomWidth+0.001;
-			topDepth = 0.5;//drand48() * bottomDepth+0.001;
-			topHeight = 0.5;//drand48() * 10+0.001;
+			complex = drand48() * 2;
+			
+			topWidth = drand48() * bottomWidth+0.001;
+			topDepth = drand48() * bottomDepth+0.001;
+			topHeight = drand48() * 10+0.001;
 			if(topWidth > bottomWidth || topWidth < 0.1) {
 			  topWidth = bottomWidth;
 			}
@@ -1509,17 +1508,17 @@ int main(int argc, char** argv)
 	    */
 	    seed = i + j; 
 	    srand48(seed);
-	    bottomWidth = 0.5;//drand48()+0.001;
+	    bottomWidth = drand48()+0.001;
 	    bottomWidth *= maxWidth;
 	    if(bottomWidth < 0.15) {
 	      bottomWidth = 0.15;
 	    }
-	    bottomDepth = 0.5;//drand48()+0.001;
+	    bottomDepth = drand48()+0.001;
 	    bottomDepth *= maxDepth;
 	    if(bottomDepth < 0.15) {
 	      bottomDepth = 0.15;
 	    }
-	    bottomHeight = 0.5;//drand48()+0.001;
+	    bottomHeight = drand48()+0.001;
 	    bottomHeight *= 10;
 	    if(bottomHeight < 1) {
 	      bottomHeight = 1;
@@ -1529,12 +1528,11 @@ int main(int argc, char** argv)
 				  bottomWidth, bottomDepth, bottomHeight, seed);
 	    init_windowGrid(&windowBottom[i][j], program,
 			    bottomWidth, bottomDepth, bottomHeight, seed);
-	    srand48(seed);
-	    complex = 2;//drand48() * 2;
+	    complex = drand48() * 2;
 	  
-	    topWidth = 0.5;//drand48() * bottomWidth+0.001;
-	    topDepth = 0.5;//drand48() * bottomDepth+0.001;
-	    topHeight = 0.5;//drand48() * 10+0.001;
+	    topWidth = drand48() * bottomWidth+0.001;
+	    topDepth = drand48() * bottomDepth+0.001;
+	    topHeight = drand48() * 10+0.001;
 	    if(topWidth > bottomWidth || topWidth < 0.1) {
 	      topWidth = bottomWidth;
 	    }
