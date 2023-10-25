@@ -19,10 +19,11 @@
 static GLuint program = 0; /**< id value for the GLSL program */
 static GLuint program2 = 1;
 
-static kuhl_geometry building;
-static kuhl_geometry windows;
-static kuhl_geometry complexBuilding;
-static kuhl_geometry windows2;
+static kuhl_geometry buildingBottom[10][10];
+static kuhl_geometry windowBottom[10][10];
+static kuhl_geometry buildingTop[10][10];
+static kuhl_geometry windowTop[10][10];
+static int isComplex[10][10];
 static kuhl_geometry road1;
 int isForward = 0;
 int isBackward = 0;
@@ -49,22 +50,18 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 	*/
 	if(action == GLFW_PRESS || action == GLFW_REPEAT) {
 	  if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-	    printf("pressed space\n");
 	    isForward = 1;
 	  }
 
 	  if(key == GLFW_KEY_B && action == GLFW_PRESS) {
-	    printf("pressed b\n");
 	    isBackward = 1;
 	  }
 
 	  if(key == GLFW_KEY_SPACE && action == GLFW_REPEAT) {
-	    printf("held space\n");
 	    isForward = 1;
 	  }
 
 	  if(key == GLFW_KEY_B && action == GLFW_REPEAT) {
-	    printf("held b\n");
 	    isBackward = 1;
 	  }
 	  
@@ -117,7 +114,7 @@ void display()
 
 		/* Calculate an angle to rotate the object. glfwGetTime() gets
 		 * the time in seconds since GLFW was initialized. Rotates 45 degrees every second. */
-		float angle = fmod(10, 360);
+		float angle = fmod(0, 360);
 
 		/* Make sure all computers/processes use the same angle */
 		dgr_setget("angle", &angle, sizeof(GLfloat));
@@ -145,8 +142,6 @@ void display()
 		  translation = translation - 0.05f;
 		}
 		
-		printf("%f\n", translation);
-		printf("%d\n", groundShift);
 		groundShift = translation;
 		if(groundShift > zOrigin) {
 		  zOrigin++; 
@@ -203,9 +198,33 @@ void display()
 		/* Draw the geometry using the matrices that we sent to the
 		 * vertex programs immediately above */
 		//startpos = -10;
+		for(int i = 0; i < 10; i++) {
+		  for(int j = 0; j < 10; j++) {
+		    //0.33 for width for road offset
+		    mat4f_translate_new(transMat, (0.33+j*2)-10, startpos,
+					translation+i-(float) zOrigin);
+		    mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
+
+		    
+		    glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+				       1, // number of 4x4 float matrices
+				       0, // transpose
+				       modelview); // value
+		    
+		    kuhl_geometry_draw(&buildingBottom[i][j]);
+		    kuhl_geometry_draw(&windowBottom[i][j]);
+		    if(isComplex[i][j]) {
+		      kuhl_geometry_draw(&buildingTop[i][j]);
+		      kuhl_geometry_draw(&windowTop[i][j]);
+		    }
+		    
+		  }
+		}
+		/*
 		mat4f_translate_new(transMat, 0.33, startpos, translation);
 		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
 
+		
 		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
 		                   1, // number of 4x4 float matrices
 		                   0, // transpose
@@ -224,6 +243,7 @@ void display()
 
 		kuhl_geometry_draw(&complexBuilding);
 		kuhl_geometry_draw(&windows2);
+		*/
 		glUseProgram(0);
 
 		/*
@@ -262,10 +282,10 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 		     float height, float seed) {
   //Find the amount of windows that can fit in each face
   //Windows will be 0.5 by 0.5
-  float triangleWidth = 0.05;
-  float triangleHeight = 0.05;
+  float triangleWidth = 0.1;
+  float triangleHeight = 0.1;
   //Small line between triangles
-  float lineSpace = 0.007;
+  float lineSpace = 0.01;
   int rows = width / (triangleHeight + lineSpace);
   int collumns = height / (triangleWidth + lineSpace);
   int wideRows = depth / (triangleWidth + lineSpace);
@@ -293,7 +313,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
       currentYInc = 0;
       currentXInc = 0;
     }
-    printf("%d\n", i / (totalVerts*3));
+    
     if(i / ((totalVerts*3)) == 0) {
       if(trianglePlace == 0) {
 	vertexPositions[i] =  currentXInc+ lineSpace;
@@ -320,7 +340,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, rows);
+	
 	if(windowCount >= rows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -356,7 +376,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, rows);
+	
 	if(windowCount >= rows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -373,7 +393,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
     int trianglePlace = i % 18;
     if(i / ((totalVerts*3*2+wideTotalVerts*3)) == 0) { 
       if(trianglePlace == 0) {
-	printf("runs\n", i / (totalVerts*3*2));
+	
 	vertexPositions[i] =  -0.005;
 	vertexPositions[i+1] =  currentYInc+ lineSpace;
 	vertexPositions[i+2] = currentXInc+ lineSpace;
@@ -398,7 +418,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, wideRows);
+	
 	if(windowCount >= wideRows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -412,7 +432,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 	currentYInc = 0;
       }
       if(trianglePlace == 0) {
-	printf("runs\n", i / (totalVerts*3*2));
+	
 	vertexPositions[i] =  width+0.005;
 	vertexPositions[i+1] =  currentYInc+ lineSpace;
 	vertexPositions[i+2] = currentXInc+ lineSpace;
@@ -437,7 +457,7 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, wideRows);
+     
 	if(windowCount >= wideRows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -499,7 +519,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
       currentYInc = 0;
       currentXInc = 0;
     }
-    printf("%d\n", i / (totalVerts*3));
+    
     if(i / ((totalVerts*3)) == 0) {
       if(trianglePlace == 0) {
 	vertexPositions[i] =  currentXInc+ lineSpace+centerWidth;
@@ -526,7 +546,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, rows);
+	
 	if(windowCount >= rows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -562,7 +582,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, rows);
+	
 	if(windowCount >= rows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -579,7 +599,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
     int trianglePlace = i % 18;
     if(i / ((totalVerts*3*2+wideTotalVerts*3)) == 0) { 
       if(trianglePlace == 0) {
-	printf("runs\n", i / (totalVerts*3*2));
+	
 	vertexPositions[i] =  -0.005+centerWidth;
 	vertexPositions[i+1] =  currentYInc+ lineSpace+bottomHeight;
 	vertexPositions[i+2] = currentXInc+ lineSpace+centerDepth;
@@ -604,7 +624,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, wideRows);
+       
 	if(windowCount >= wideRows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -618,7 +638,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 	currentYInc = 0;
       }
       if(trianglePlace == 0) {
-	printf("runs\n", i / (totalVerts*3*2));
+	
 	vertexPositions[i] =  width+0.005+centerWidth;
 	vertexPositions[i+1] =  currentYInc+ lineSpace+bottomHeight;
 	vertexPositions[i+2] = currentXInc+ lineSpace+centerDepth;
@@ -643,7 +663,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
 	currentXInc += triangleWidth + lineSpace;
 	windowCount++;
 	
-	printf("window count: %d\nrows: %d\n", windowCount, wideRows);
+	
 	if(windowCount >= wideRows) {
 	  currentXInc = 0;
 	  currentYInc += triangleHeight + lineSpace;
@@ -976,15 +996,31 @@ int main(int argc, char** argv)
 	 * draw. */
 	//Max depth is 0.83
 	//Max width is 1.65
-	init_geometryBuilding(&building, program, 0.5, 0.5, 6, 4);
-	init_windowGrid(&windows, program, 0.5, 0.5, 6, 4);
-	init_geometryBuilding(&complexBuilding, program, 1.65, 0.83, 6, 4);
-	init_windowGrid(&windows2, program, 1.65, 0.83, 6, 4);
+	float bottomWidth = 0.83;
+	float bottomDepth = 0.83;
+	float bottomHeight = 2;
+	float topWidth = 0.25;
+	float topDepth = 0.25;
+	float topHeight = 1;
+	int complex = 1;
+	for(int i = 0; i < 10; i++) {
+	  for(int j = 0; j < 10; j++) {
+	    init_geometryBuilding(&buildingBottom[i][j], program,
+				  bottomWidth, bottomDepth, bottomHeight, 4);
+	    init_windowGrid(&windowBottom[i][j], program,
+			    bottomWidth, bottomDepth, bottomHeight, 2);
+	    init_geometryComplexBuilding(&buildingTop[i][j], program, topWidth, topDepth, topHeight,
+					 bottomWidth, bottomDepth, bottomHeight, 1);
+	    init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
+					 bottomWidth, bottomDepth, bottomHeight, 1);
+	    isComplex[i][j] = complex;
+	  }
+	}
 	init_geometryRoad(&road1, program2);
 	dgr_init();     /* Initialize DGR based on config file. */
 
-	float initCamPos[3]  = {0,0,35}; // location of camera
-	float initCamLook[3] = {0,0,0}; // a point the camera is facing at
+	float initCamPos[3]  = {0,7,33}; // location of camera
+	float initCamLook[3] = {0,-6,2}; // a point the camera is facing at
 	float initCamUp[3]   = {0,1,0}; // a vector indicating which direction is up
 	viewmat_init(initCamPos, initCamLook, initCamUp);
 	
