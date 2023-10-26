@@ -3,7 +3,7 @@
  * the file named "LICENSE" for a full copy of the license.
  */
 
-/** @file Demonstrates drawing a colored 3D triangle.
+/* @file Demonstrates drawing a colored 3D triangle.
  *
  * @author Scott Kuhl
  */
@@ -25,7 +25,7 @@ static kuhl_geometry buildingTop[10][10];
 static kuhl_geometry windowTop[10][10];
 static int isComplex[10][10];
 static kuhl_geometry road1;
-static originalIndex[10][10];
+
 
 int start = 1;
 float bottomWidth = 0.83;
@@ -91,245 +91,9 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 	   For a list of keys, see: https://www.glfw.org/docs/latest/group__keys.html  */
 	
 }
-/*
-/** Draws the 3D scene. */
-/*
-void display()
-{
-	/* Render the scene once for each viewport. Frequently one
-	 * viewport will fill the entire screen. However, this loop will
-	 * run twice for HMDs (once for the left eye and once for the
-	 * right). */
-/*
-viewmat_begin_frame();
-	for(int viewportID=0; viewportID<viewmat_num_viewports(); viewportID++)
-	{
-		viewmat_begin_eye(viewportID);
 
-		/* Where is the viewport that we are drawing onto and what is its size? */
-//		int viewport[4]; // x,y of lower left corner, width, height
-//		viewmat_get_viewport(viewport, viewportID);
-		/* Tell OpenGL the area of the window that we will be drawing in. */
-//		glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+/* Draws the 3D scene. */
 
-		/* Clear the current viewport. Without glScissor(), glClear()
-		 * clears the entire screen. We could call glClear() before
-		 * this viewport loop---but in order for all variations of
-		 * this code to work (Oculus support, etc), we can only draw
-		 * after viewmat_begin_eye(). *//*
-		glScissor(viewport[0], viewport[1], viewport[2], viewport[3]);
-		glEnable(GL_SCISSOR_TEST);
-		glClearColor(.2,.2,.2,0); // set clear color to grey
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_SCISSOR_TEST);
-		glEnable(GL_DEPTH_TEST); // turn on depth testing
-		kuhl_errorcheck();
-
-		/* Get the view matrix and the projection matrix */
-//	float viewMat[16], perspective[16];
-//		viewmat_get(viewMat, perspective, viewportID);
-
-		/* Calculate an angle to rotate the object. glfwGetTime() gets
-		 * the time in seconds since GLFW was initialized. Rotates 45 degrees every second. */
-//		float angle = fmod(0, 360);
-
-		/* Make sure all computers/processes use the same angle */
-//		dgr_setget("angle", &angle, sizeof(GLfloat));
-
-		/* Create a 4x4 rotation matrix based on the angle we computed. */
-//		float rotateMat[16];
-//		mat4f_rotateAxis_new(rotateMat, angle, 1,0,0);
-
-		/* Create a scale matrix. */
-//		float scaleMat[16];
-//		mat4f_scale_new(scaleMat, 3, 3, 3);
-
-		//float transMat[16];
-		//float transMat2[16];
-/*
-if(isNew) {
-		  mat4f_identity(transMat);
-		  isNew = 0;
-		}
-
-		if(isForward) {
-		  translation = translation + 0.05f;
-		}
-
-		else if(isBackward) {
-		  translation = translation - 0.05f;
-		}
-		
-		groundShift = translation;
-		if(groundShift > zOrigin) {
-		  zOrigin++; 
-		}
-		
-		if(groundShift < zOrigin) {
-		  zOrigin--;
-		}
-		float startpos = -1;
-		mat4f_translate_new(transMat, 0, startpos, translation-(float) zOrigin);
-		/* Last parameter must be NULL, otherwise your program
-		   can/will crash. The modelview matrix is (the view matrix) *
-		   (the model matrix). Here, we have two matrices in the model
-		   matrix, and multiply everything together at once into the
-		   modelview matrix.
-		   
-		   modelview = viewmat * sclaeMat * rotateMat 
-		                         ^---model matrix---^
-		*/
-//		float modelview[16];
-//		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-
-		/* Tell OpenGL which GLSL program the subsequent
-		 * glUniformMatrix4fv() calls are for. */
-/*		kuhl_errorcheck();
-
-		glUseProgram(program2);
-		
-		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   perspective); // value
-		/* Send the modelview matrix to the vertex program. */
-		
-/*		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		kuhl_geometry_draw(&road1);
-		glUseProgram(0);
-		kuhl_errorcheck();
-		glUseProgram(program);
-		/* Send the perspective projection matrix to the vertex program. */
-/*		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   perspective); // value
-		/* Send the modelview matrix to the vertex program. */
-/*		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		kuhl_errorcheck();
-		/* Draw the geometry using the matrices that we sent to the
-		 * vertex programs immediately above */
-		//startpos = -10;
-/*	        if(groundShift > zOrigin) {
-		  zOrigin++; 
-		}
-		
-		if(groundShift < zOrigin) {
-		  zOrigin--;
-		}
-		
-		for(int i = 0; i < 10; i++) {
-		  for(int j = 0; j < 10; j++) {
-		    //0.33 for width for road offset
-		    seed = i*i + j*j + zOrigin*7; 
-		    if(groundShift < (zOrigin + 1) || groundShift > (zOrigin - 1)) {
-		      srand48(seed);
-		      bottomWidth = drand48();
-		      bottomWidth *= maxWidth;
-		      bottomDepth = drand48();
-		      bottomDepth *= maxDepth;
-		      bottomHeight = drand48();
-		      bottomHeight *= 10;
-		      init_geometryBuilding(&buildingBottom[i][j], program,
-					    bottomWidth, bottomDepth, bottomHeight, seed);
-		      init_windowGrid(&windowBottom[i][j], program,
-				      bottomWidth, bottomDepth, bottomHeight, seed);
-		      complex = drand48() * 2;
-		      if(complex >= 1) {
-			topWidth = drand48() * bottomWidth;
-			topDepth = drand48() * bottomDepth;
-			topHeight = drand48() * 10;
-			init_geometryComplexBuilding(&buildingTop[i][j], program,
-						     topWidth, topDepth, topHeight,
-						     bottomWidth, bottomDepth, bottomHeight, seed);
-			init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
-					       bottomWidth, bottomDepth, bottomHeight, seed);
-		      }
-		      isComplex[i][j] = complex;
-		    }
-		    mat4f_translate_new(transMat, (0.33+j*2)-10, startpos,
-					translation+i-(float) zOrigin);
-		    mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-
-		    
-		    glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-				       1, // number of 4x4 float matrices
-				       0, // transpose
-				       modelview); // value
-		    
-		    kuhl_geometry_draw(&buildingBottom[i][j]);
-		    kuhl_geometry_draw(&windowBottom[i][j]);
-		    if(isComplex[i][j] >= 1) {
-		      kuhl_geometry_draw(&buildingTop[i][j]);
-		      kuhl_geometry_draw(&windowTop[i][j]);
-		    }
-		    
-		  }
-		}
-		/*
-		mat4f_translate_new(transMat, 0.33, startpos, translation);
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-
-		
-		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		
-		kuhl_geometry_draw(&building);
-		kuhl_geometry_draw(&windows);
-		//startpos = -10;
-		mat4f_translate_new(transMat, 0.33, startpos, translation+1);
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-		
-		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-
-		kuhl_geometry_draw(&complexBuilding);
-		kuhl_geometry_draw(&windows2);
-		*/
-//		glUseProgram(0);
-
-		/*
-		glUseProgram(program2);
-		
-		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   perspective); // value
-		/* Send the modelview matrix to the vertex program. 
-		
-		glUniformMatrix4f(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		kuhl_geometry_draw(&road1);
-		*/
-		/* If we wanted to draw multiple triangles and quads at
-		 * different locations, we could call glUniformMatrix4fv again
-		 * to change the ModelView matrix and then call
-		 * kuhl_geometry_draw() again to draw that object again using
-		 * the new model matrix. */
-
-//		glUseProgram(0); // stop using a GLSL program.
-//		viewmat_end_eye(viewportID);
-//	} // finish viewport loop
-//	viewmat_end_frame();
-
-	/* Check for errors. If there are errors, consider adding more
-	 * calls to kuhl_errorcheck() in your code. */
-//	kuhl_errorcheck();
-/*
-}
-*/
 
 void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
 		     float height, float seed) {
@@ -352,8 +116,6 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
   kuhl_geometry_new(geom, prog, totalVerts*2 + wideTotalVerts*2, // num vertices
 		    GL_TRIANGLES); // primitive type
   
-  float rowInc = triangleHeight + lineSpace;
-  float collumnInc = triangleWidth + lineSpace;
   
   GLfloat vertexPositions[totalVerts*2*3 + wideTotalVerts*2*3];
 
@@ -568,9 +330,9 @@ void init_windowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
       colorData[i+17] = 0;
     }
   }
-  float isTextured = 0;
+  
   kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
-  //kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
+
 }
 
 void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float depth,
@@ -595,8 +357,6 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
   kuhl_geometry_new(geom, prog, totalVerts*2 + wideTotalVerts*2, // num vertices
 		    GL_TRIANGLES); // primitive type
   
-  float rowInc = triangleHeight + lineSpace;
-  float collumnInc = triangleWidth + lineSpace;
   
   GLfloat vertexPositions[totalVerts*2*3 + wideTotalVerts*2*3];
 
@@ -814,8 +574,7 @@ void init_complexWindowGrid(kuhl_geometry *geom, GLuint prog, float width, float
     }
   }
   kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
-  float isTextured = 0;
-  //kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
+
 }
 
 
@@ -944,8 +703,8 @@ void init_geometryComplexBuilding(kuhl_geometry *geom, GLuint prog, float width,
 			       0.5, 0.5, 0.5,
 			       0.5, 0.5, 0.5};
 	kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
-	float isTextured = 0;
-	//	kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
+
+
 }
 
 void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float depth,
@@ -1071,7 +830,7 @@ void init_geometryBuilding(kuhl_geometry *geom, GLuint prog, float width, float 
 			       0.5, 0.5, 0.5,
 			       0.5, 0.5, 0.5};
 	kuhl_geometry_attrib(geom, colorData, 3, "in_Color", KG_WARN);
-	float isTextured = 0;
+	
 	//	kuhl_geometry_attrib(geom, &isTextured, 3, "textured", KG_WARN);
 }
 
@@ -1167,16 +926,7 @@ void display()
 		}
 		
 		groundShift = translation;
-		/*
-		if(groundShift > zOrigin) {
-		  zOrigin++; 
-		}
-		*/
-		/*
-		if(groundShift < zOrigin) {
-		  zOrigin--;
-		}
-		*/
+
 		float startpos = -1;
 		mat4f_translate_new(transMat, 0, startpos, translation-(float) zOrigin);
 		/* Last parameter must be NULL, otherwise your program
@@ -1229,7 +979,7 @@ void display()
 		  for(int i = 0; i < 10; i++) {
 		    for(int j = 0; j < 10; j++) {
 		      seed = i*92+j*21+zOrigin;
-		      printf("%d seed\n", seed);
+		      //printf("%d seed\n", seed);
 		      srand48(seed);
 		      
 		      bottomWidth = drand48()+0.001;
@@ -1247,7 +997,7 @@ void display()
 		      if(bottomHeight < 1) {
 			bottomHeight = 1;
 		      }
-		      printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
+		      //printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
 		      init_geometryBuilding(&buildingBottom[i][j], program,
 					    bottomWidth, bottomDepth, bottomHeight, seed);
 		      init_windowGrid(&windowBottom[i][j], program,
@@ -1266,14 +1016,14 @@ void display()
 		      if(topHeight < 1) {
 			topHeight = 1;
 		      }
-		      printf("%f %f %f \n", topWidth, topDepth, topHeight);
+		      //printf("%f %f %f \n", topWidth, topDepth, topHeight);
 		      init_geometryComplexBuilding(&buildingTop[i][j], program,
 						   topWidth, topDepth, topHeight,
 						   bottomWidth, bottomDepth, bottomHeight, seed);
 		      init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
 					     bottomWidth, bottomDepth, bottomHeight, seed);
 		      
-		      printf("%d\n", complex);
+		      //printf("%d\n", complex);
 		      isComplex[i][j] = complex;
 		      start = 0;
 		    }
@@ -1307,7 +1057,7 @@ void display()
 			//originalIndex[i][j]--;
 			//seed = 0;
 			//backward--;
-			printf("%d seed\n", seed);
+		       
 			srand48(seed);
 			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
@@ -1324,7 +1074,7 @@ void display()
 			if(bottomHeight < 1) {
 			  bottomHeight = 1;
 			}
-			printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
+			//printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
 			init_geometryBuilding(&buildingBottom[i][j], program,
 					      bottomWidth, bottomDepth, bottomHeight, seed);
 			init_windowGrid(&windowBottom[i][j], program,
@@ -1344,14 +1094,14 @@ void display()
 			if(topHeight < 1) {
 			  topHeight = 1;
 			}
-			printf("%f %f %f \n", topWidth, topDepth, topHeight);
+			//printf("%f %f %f \n", topWidth, topDepth, topHeight);
 			init_geometryComplexBuilding(&buildingTop[i][j], program,
 						     topWidth, topDepth, topHeight,
 						     bottomWidth, bottomDepth, bottomHeight, seed);
 			init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
 					       bottomWidth, bottomDepth, bottomHeight, seed);
 			
-			printf("%d\n", complex);
+			//printf("%d\n", complex);
 			isComplex[i][j] = complex;
 		      }
 		      
@@ -1390,7 +1140,7 @@ void display()
 			//originalIndex[i][j]++;
 			//seed = 0;
 			//originalIndex[i][j]++;
-			printf("%d seed\n", seed);
+			//printf("%d seed\n", seed);
 			srand48(seed);
 			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
@@ -1407,7 +1157,7 @@ void display()
 			if(bottomHeight < 1) {
 			  bottomHeight = 1;
 			}
-			printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
+			//printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
 			init_geometryBuilding(&buildingBottom[i][j], program,
 					      bottomWidth, bottomDepth, bottomHeight, seed);
 			init_windowGrid(&windowBottom[i][j], program,
@@ -1427,14 +1177,14 @@ void display()
 			if(topHeight < 1) {
 			  topHeight = 1;
 			}
-			printf("%f %f %f \n", topWidth, topDepth, topHeight);
+			//printf("%f %f %f \n", topWidth, topDepth, topHeight);
 			init_geometryComplexBuilding(&buildingTop[i][j], program,
 						     topWidth, topDepth, topHeight,
 						     bottomWidth, bottomDepth, bottomHeight, seed);
 			init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
 					       bottomWidth, bottomDepth, bottomHeight, seed);
 			
-			printf("%d\n", complex);
+			//printf("%d\n", complex);
 			isComplex[i][j] = complex;
 		      
 		      }
@@ -1468,47 +1218,10 @@ void display()
 		    
 		  }
 		}
-		/*
-		mat4f_translate_new(transMat, 0.33, startpos, translation);
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-
-		
-		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		
-		kuhl_geometry_draw(&building);
-		kuhl_geometry_draw(&windows);
-		//startpos = -10;
-		mat4f_translate_new(transMat, 0.33, startpos, translation+1);
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, transMat, NULL);
-		
-		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-
-		kuhl_geometry_draw(&complexBuilding);
-		kuhl_geometry_draw(&windows2);
-		*/
+	        
 		glUseProgram(0);
 
-		/*
-		glUseProgram(program2);
 		
-		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   perspective); // value
-		/* Send the modelview matrix to the vertex program. 
-		
-		glUniformMatrix4f(kuhl_get_uniform("ModelView"),
-		                   1, // number of 4x4 float matrices
-		                   0, // transpose
-		                   modelview); // value
-		kuhl_geometry_draw(&road1);
-		*/
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
 		 * to change the ModelView matrix and then call
@@ -1548,71 +1261,6 @@ int main(int argc, char** argv)
 	/* Good practice: Unbind objects until we really need them. */
 	glUseProgram(0);
 
-	/* Create kuhl_geometry structs for the objects that we want to
-	 * draw. */
-	//Max depth is 0.83
-	//Max width is 1.65
-	/*
-	float bottomWidth = 0.83;
-	float bottomDepth = 0.83;
-	float bottomHeight = 2;
-	float topWidth = 0.25;
-	float topDepth = 0.25;
-	float topHeight = 1;
-	int complex = 1;
-	*/
-	int bonus = 0;
-	/*
-	for(int i = 9; i > -1; i--) {
-	  for(int j = 9; j > -1; j--) {
-	     printf("%d seed\n", seed);
-	    srand48(seed);
-	   
-	    bottomWidth = drand48()+0.001;
-	    bottomWidth *= maxWidth;
-	    if(bottomWidth < 0.15) {
-	      bottomWidth = 0.15;
-	    }
-	    bottomDepth = drand48()+0.001;
-	    bottomDepth *= maxDepth;
-	    if(bottomDepth < 0.15) {
-	      bottomDepth = 0.15;
-	    }
-	    bottomHeight = drand48()+0.001;
-	    bottomHeight *= 10;
-	    if(bottomHeight < 1) {
-	      bottomHeight = 1;
-	    }
-	    printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
-	    init_geometryBuilding(&buildingBottom[i][j], program,
-				  bottomWidth, bottomDepth, bottomHeight, seed);
-	    init_windowGrid(&windowBottom[i][j], program,
-			    bottomWidth, bottomDepth, bottomHeight, seed);
-	    complex = drand48() * 2;
-	  
-	    topWidth = drand48() * bottomWidth+0.001;
-	    topDepth = drand48() * bottomDepth+0.001;
-	    topHeight = drand48() * 10+0.001;
-	    if(topWidth > bottomWidth || topWidth < 0.1) {
-	      topWidth = bottomWidth;
-	    }
-	    if(topDepth > bottomDepth || topDepth < 0.1) {
-	      topDepth = bottomDepth;
-	    }
-	    if(topHeight < 1) {
-	      topHeight = 1;
-	    }
-	    printf("%f %f %f \n", topWidth, topDepth, topHeight);
-	    init_geometryComplexBuilding(&buildingTop[i][j], program,
-					 topWidth, topDepth, topHeight,
-					 bottomWidth, bottomDepth, bottomHeight, seed);
-	    init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
-				   bottomWidth, bottomDepth, bottomHeight, seed);
-	    
-	    printf("%d\n", complex);
-	    isComplex[i][j] = complex;
-	  }
-	}*/
 	
 	
 	init_geometryRoad(&road1, program2);
