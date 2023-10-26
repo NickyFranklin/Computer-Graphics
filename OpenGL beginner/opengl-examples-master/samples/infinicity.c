@@ -25,7 +25,9 @@ static kuhl_geometry buildingTop[10][10];
 static kuhl_geometry windowTop[10][10];
 static int isComplex[10][10];
 static kuhl_geometry road1;
+static originalIndex[10][10];
 
+int start = 1;
 float bottomWidth = 0.83;
 float bottomDepth = 0.83;
 float bottomHeight = 2;
@@ -36,13 +38,14 @@ int complex = 1;
 int seed = 0;
 float maxWidth = 1.65;
 float maxDepth = 0.83;
+int backward = 10;
 
 int isForward = 0;
 int isBackward = 0;
 int isNew = 1;
 float transMat[16];
 float translation = 0;
-int zOrigin = 1;
+int zOrigin = 0;
 int groundShift = 0;
 
 /* Called by GLFW whenever a key is pressed. */
@@ -1222,18 +1225,73 @@ void display()
 		/* Draw the geometry using the matrices that we sent to the
 		 * vertex programs immediately above */
 		//startpos = -10;
+		if(start) {
+		  for(int i = 0; i < 10; i++) {
+		    for(int j = 0; j < 10; j++) {
+		      seed = i*92+j*21+zOrigin;
+		      printf("%d seed\n", seed);
+		      srand48(seed);
+		      
+		      bottomWidth = drand48()+0.001;
+		      bottomWidth *= maxWidth;
+		      if(bottomWidth < 0.15) {
+			bottomWidth = 0.15;
+		      }
+		      bottomDepth = drand48()+0.001;
+		      bottomDepth *= maxDepth;
+		      if(bottomDepth < 0.15) {
+			bottomDepth = 0.15;
+		      }
+		      bottomHeight = drand48()+0.001;
+		      bottomHeight *= 10;
+		      if(bottomHeight < 1) {
+			bottomHeight = 1;
+		      }
+		      printf("%f %f %f \n", bottomWidth, bottomDepth, bottomHeight);
+		      init_geometryBuilding(&buildingBottom[i][j], program,
+					    bottomWidth, bottomDepth, bottomHeight, seed);
+		      init_windowGrid(&windowBottom[i][j], program,
+				      bottomWidth, bottomDepth, bottomHeight, seed);
+		      complex = drand48() * 2;
+		      
+		      topWidth = drand48() * bottomWidth+0.001;
+		      topDepth = drand48() * bottomDepth+0.001;
+		      topHeight = drand48() * 10+0.001;
+		      if(topWidth > bottomWidth || topWidth < 0.1) {
+			topWidth = bottomWidth;
+		      }
+		      if(topDepth > bottomDepth || topDepth < 0.1) {
+			topDepth = bottomDepth;
+		      }
+		      if(topHeight < 1) {
+			topHeight = 1;
+		      }
+		      printf("%f %f %f \n", topWidth, topDepth, topHeight);
+		      init_geometryComplexBuilding(&buildingTop[i][j], program,
+						   topWidth, topDepth, topHeight,
+						   bottomWidth, bottomDepth, bottomHeight, seed);
+		      init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
+					     bottomWidth, bottomDepth, bottomHeight, seed);
+		      
+		      printf("%d\n", complex);
+		      isComplex[i][j] = complex;
+		      start = 0;
+		    }
+		  }
+		}
 		if(groundShift < zOrigin) {
 		  zOrigin--;
 		  for(int i = 0; i < 10; i++) {
 		    for(int j = 0; j < 10; j++) {
-		      //seed = zOrigin;
+		      seed = i*92+j*21+zOrigin;
+		      //backward--;
 		      //printf("%d seed\n", seed);
 		      //srand(seed);
-		      if(i == -1) {
-			kuhl_geometry_delete(&buildingBottom[i][j]);
-			kuhl_geometry_delete(&buildingTop[i][j]);
-			kuhl_geometry_delete(&windowBottom[i][j]);
-			kuhl_geometry_delete(&windowTop[i][j]);
+		      if(i == 0) {
+		        kuhl_geometry_delete(&(buildingBottom[i][j]));
+			kuhl_geometry_delete(&(buildingTop[i][j]));
+			kuhl_geometry_delete(&(windowBottom[i][j]));
+			kuhl_geometry_delete(&(windowTop[i][j]));
 		      }
 		      if(i!=9) {
 			buildingBottom[i][j] = buildingBottom[i+1][j];
@@ -1241,12 +1299,16 @@ void display()
 			windowTop[i][j] = windowTop[i+1][j];
 			buildingTop[i][j] = buildingTop[i+1][j];
 			isComplex[i][j] = isComplex[i+1][j];
+			//originalIndex[i][j] = originalIndex[i+1][j];
+			//originalIndex[i][j]--;
 		      }
 
 		      else {
-			seed = i+j;
+			//originalIndex[i][j]--;
+			//seed = 0;
+			//backward--;
 			printf("%d seed\n", seed);
-			srand48(i+j);
+			srand48(seed);
 			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
 			if(bottomWidth < 0.15) {
@@ -1305,9 +1367,9 @@ void display()
 		  zOrigin++;
 		  for(int i = 9; i > -1; i--) {
 		    for(int j = 9; j > -1; j--) {
-		      //seed = zOrigin;
+		      seed = (zOrigin+i*92+j*21);
 		      //printf("%d seed\n", seed);
-		      if(i == 10) {
+		      if(i == 9) {
 			kuhl_geometry_delete(&(buildingBottom[i][j]));
 			kuhl_geometry_delete(&(buildingTop[i][j]));
 			kuhl_geometry_delete(&(windowBottom[i][j]));
@@ -1319,12 +1381,17 @@ void display()
 			windowTop[i][j] = windowTop[i-1][j];
 			buildingTop[i][j] = buildingTop[i-1][j];
 			isComplex[i][j] = isComplex[i-1][j];
+			//originalIndex[i][j] = originalIndex[i-1][j];
+			//originalIndex[i][j]++;
+			//printf("original index: %d\n", originalIndex[i][j]);
 		      }
-
+		      
 		      else {
-			seed = i+j;
+			//originalIndex[i][j]++;
+			//seed = 0;
+			//originalIndex[i][j]++;
 			printf("%d seed\n", seed);
-			srand48(i+j);
+			srand48(seed);
 			bottomWidth = drand48()+0.001;
 			bottomWidth *= maxWidth;
 			if(bottomWidth < 0.15) {
@@ -1374,6 +1441,7 @@ void display()
 		      
 		    }
 		  }
+		  
 		}
 		
 		
@@ -1493,21 +1561,13 @@ int main(int argc, char** argv)
 	float topHeight = 1;
 	int complex = 1;
 	*/
-	for(int i = 0; i < 10; i++) {
-	  for(int j = 0; j < 10; j++) {
-	    /*
-	    init_geometryBuilding(&buildingBottom[i][j], program,
-				  bottomWidth, bottomDepth, bottomHeight, 4);
-	    init_windowGrid(&windowBottom[i][j], program,
-			    bottomWidth, bottomDepth, bottomHeight, 2);
-	    init_geometryComplexBuilding(&buildingTop[i][j], program, topWidth, topDepth, topHeight,
-					 bottomWidth, bottomDepth, bottomHeight, 1);
-	    init_complexWindowGrid(&windowTop[i][j], program, topWidth, topDepth, topHeight,
-					 bottomWidth, bottomDepth, bottomHeight, 1);
-	    isComplex[i][j] = complex;
-	    */
-	    seed = i + j; 
+	int bonus = 0;
+	/*
+	for(int i = 9; i > -1; i--) {
+	  for(int j = 9; j > -1; j--) {
+	     printf("%d seed\n", seed);
 	    srand48(seed);
+	   
 	    bottomWidth = drand48()+0.001;
 	    bottomWidth *= maxWidth;
 	    if(bottomWidth < 0.15) {
@@ -1552,13 +1612,13 @@ int main(int argc, char** argv)
 	    printf("%d\n", complex);
 	    isComplex[i][j] = complex;
 	  }
-	}
+	}*/
 	
 	
 	init_geometryRoad(&road1, program2);
 	dgr_init();     /* Initialize DGR based on config file. */
 
-	float initCamPos[3]  = {0,7,33}; // location of camera
+	float initCamPos[3]  = {0,7,30}; // location of camera
 	float initCamLook[3] = {0,-6,2}; // a point the camera is facing at
 	float initCamUp[3]   = {0,1,0}; // a vector indicating which direction is up
 	viewmat_init(initCamPos, initCamLook, initCamUp);
