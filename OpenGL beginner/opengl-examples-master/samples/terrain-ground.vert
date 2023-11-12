@@ -50,9 +50,9 @@ void main()
 	pos3.z = pos3.z + 0.0005;
 	pos3.y = (1 * color3.r + 1 * color3.b + 1 * color3.g)/3;
 
-	vec3 subPair1 = pos - pos2;
+	vec3 subPair1 = pos2-pos;
 
-	vec3 subPair2 = pos - pos3;
+	vec3 subPair2 = pos3-pos;
 
 	vec3 normal = cross(subPair2, subPair1);
 	//vec3 normal = pos;

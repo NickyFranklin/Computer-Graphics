@@ -17,8 +17,11 @@
 #include <GLFW/glfw3.h>
 
 static GLuint program = 0; /**< id value for the GLSL program */
+static GLuint program2 = 0;
 
 static kuhl_geometry groundQuad;
+static kuhl_geometry quad;
+
 
 static int red = 0;
 
@@ -135,6 +138,21 @@ void display()
 		//kuhl_geometry_draw(&triangle);
 		kuhl_geometry_draw(&groundQuad);
 
+		glUseProgram(program2);
+		kuhl_errorcheck();
+		
+		/* Send the perspective projection matrix to the vertex program. */
+		glUniformMatrix4fv(kuhl_get_uniform("Projection"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   perspective); // value
+		/* Send the modelview matrix to the vertex program. */
+		glUniformMatrix4fv(kuhl_get_uniform("ModelView"),
+		                   1, // number of 4x4 float matrices
+		                   0, // transpose
+		                   modelview); // value
+		kuhl_errorcheck();
+		kuhl_geometry_draw(&quad);
 		/* If we wanted to draw multiple triangles and quads at
 		 * different locations, we could call glUniformMatrix4fv again
 		 * to change the ModelView matrix and then call
@@ -271,6 +289,40 @@ void init_geometryGroundQuad(kuhl_geometry *geom, GLuint prog)
 	kuhl_errorcheck();
 }
 
+void init_geometryQuad(kuhl_geometry *geom, GLuint prog) {
+  kuhl_geometry_new(geom, prog, 4, GL_TRIANGLES);
+
+  GLfloat vertexPositions[] = {0, 1, 0,
+			       20, 1, 0,
+			       0, 1, 10,
+			       20, 1, 10};
+  kuhl_geometry_attrib(geom, vertexPositions, 3, "in_Position", KG_WARN);
+
+  GLfloat texcoordData[] = {0,0,
+			    1,0,
+			    0,1,
+			    1,1};
+  
+  
+  kuhl_geometry_attrib(geom, texcoordData, 2, "in_TexCoord", KG_WARN);
+  
+  
+  GLuint texId3 = 2;
+  float aspectRatio3 = kuhl_read_texture_file("../images/clouds.jpg", &texId3);
+  msg(MSG_DEBUG, "Aspect ratio of image is %f\n", aspectRatio3);
+  kuhl_geometry_texture(geom, texId3, "tex", KG_WARN);
+  
+
+  
+  
+  GLuint indexData[] = {0,1,2,
+			3,2,1};
+  kuhl_geometry_indices(geom, indexData, 6);
+  kuhl_errorcheck();
+
+    
+}
+
 int main(int argc, char** argv)
 {
 	/* Initialize GLFW and GLEW */
@@ -287,7 +339,7 @@ int main(int argc, char** argv)
 	/* Compile and link a GLSL program composed of a vertex shader and
 	 * a fragment shader. */
 	program = kuhl_create_program("terrain-ground.vert", "terrain-ground.frag");
-
+	program2 = kuhl_create_program("cloud.vert", "cloud.frag");
 	/* Use the GLSL program so subsequent calls to glUniform*() send the variable to
 	   the correct program. */
 	
@@ -302,7 +354,7 @@ int main(int argc, char** argv)
 	/* Create kuhl_geometry structs for the objects that we want to
 	 * draw. */
 	init_geometryGroundQuad(&groundQuad, program);
-
+	init_geometryQuad(&quad, program2);
 	dgr_init();     /* Initialize DGR based on config file. */
 
 	float initCamPos[3]  = {0,1,10}; // location of camera
