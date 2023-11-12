@@ -69,7 +69,7 @@ void display()
 		viewmat_get_viewport(viewport, viewportID);
 		/* Tell OpenGL the area of the window that we will be drawing in. */
 		glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
-
+		glUniform1i(kuhl_get_uniform("red"), isRotating);
 		/* Clear the current viewport. Without glScissor(), glClear()
 		 * clears the entire screen. We could call glClear() before
 		 * this viewport loop---but in order for all variations of
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
 	glUseProgram(program);
 	kuhl_errorcheck();
 	/* Set the uniform variable in the shader that is named "red" to the value 1. */
-	glUniform1i(kuhl_get_uniform("red"), 0);
+	glUniform1i(kuhl_get_uniform("red"), isRotating);
 	kuhl_errorcheck();
 	/* Good practice: Unbind objects until we really need them. */
 	glUseProgram(0);
