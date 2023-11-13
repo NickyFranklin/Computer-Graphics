@@ -26,7 +26,6 @@ void main()
 	// program once for this object. However, it is easier to
 	// calculate here.
 	mat3 NormalMat = transpose(inverse(mat3(ModelView)));
-	     
 	out_TexCoord = in_TexCoord;
 
 	vec2 normCoord1 = in_TexCoord;

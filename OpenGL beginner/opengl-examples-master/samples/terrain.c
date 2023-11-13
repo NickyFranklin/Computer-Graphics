@@ -22,8 +22,8 @@ static GLuint program2 = 0;
 static kuhl_geometry groundQuad;
 static kuhl_geometry quad;
 
-
-static int red = 0;
+int normals = 0;
+int camera = 0;
 
 /* Called by GLFW whenever a key is pressed. */
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -45,10 +45,18 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 	/* Custom key handling code below: 
 	   For a list of keys, see: https://www.glfw.org/docs/latest/group__keys.html  */
-	if(key == GLFW_KEY_N)
+	if(key == GLFW_KEY_SPACE)
 	{
-		printf("toggling color\n");
-		red = !red;
+		printf("toggling Camera");
+		camera = !camera;
+	}
+
+	if(key == GLFW_KEY_N) {
+	  printf("toggling colors\n");
+	  normals = !normals;
+	  glUseProgram(program);
+	  glUniform1i(kuhl_get_uniform("red"), normals);
+	  glUseProgram(0);
 	}
 	
 }
@@ -84,38 +92,76 @@ void display()
 		glEnable(GL_DEPTH_TEST); // turn on depth testing
 		kuhl_errorcheck();
 
-		/* Get the view matrix and the projection matrix */
-		float viewMat[16], perspective[16];
-		viewmat_get(viewMat, perspective, viewportID);
+		float viewMat[16], perspective[16]; float rotateMat[16];
+		float scaleMat[16]; float modelview[16];
+		if(camera) { 
+		  /* Get the view matrix and the projection matrix */
+		  viewmat_get(viewMat, perspective, viewportID);
+		  
+		  /* Calculate an angle to rotate the object. glfwGetTime() gets
+		   * the time in seconds since GLFW was initialized. Rotates 45 degrees every second. */
+		  float angle = fmod(glfwGetTime()*45, 360);
+		  
+		  /* Make sure all computers/processes use the same angle */
+		  dgr_setget("angle", &angle, sizeof(GLfloat));
+		  
+		  /* Create a 4x4 rotation matrix based on the angle we computed. */
+		  mat4f_rotateAxis_new(rotateMat, 0, 0,1,0);
+		  
+		  /* Create a scale matrix. */
+		  mat4f_scale_new(scaleMat, 3, 3, -3);
+		  
+		  
+		  /* Last parameter must be NULL, otherwise your program
+		     can/will crash. The modelview matrix is (the view matrix) *
+		     (the model matrix). Here, we have two matrices in the model
+		     matrix, and multiply everything together at once into the
+		     modelview matrix.
+		     
+		     modelview = viewmat * sclaeMat * rotateMat 
+		     ^---model matrix---^
+		  */
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, NULL);
+		}
 
-		/* Calculate an angle to rotate the object. glfwGetTime() gets
-		 * the time in seconds since GLFW was initialized. Rotates 45 degrees every second. */
-		float angle = fmod(glfwGetTime()*45, 360);
 
-		/* Make sure all computers/processes use the same angle */
-		dgr_setget("angle", &angle, sizeof(GLfloat));
+		else {
+		  viewmat_get(viewMat, perspective, viewportID);
+		  //new X, new y, new z, lookat x, lookat y, lookat z, upVec x, upvec , upvec z 
+		  mat4f_lookat_new(viewMat, 0, 10, -10,
+				   0, 0, 0, 0, 0, 1);
 
-		/* Create a 4x4 rotation matrix based on the angle we computed. */
-		float rotateMat[16];
-		mat4f_rotateAxis_new(rotateMat, 0, 0,1,0);
-
-		/* Create a scale matrix. */
-		float scaleMat[16];
-		mat4f_scale_new(scaleMat, 3, 3, -3);
-
-
-		/* Last parameter must be NULL, otherwise your program
-		   can/will crash. The modelview matrix is (the view matrix) *
-		   (the model matrix). Here, we have two matrices in the model
-		   matrix, and multiply everything together at once into the
-		   modelview matrix.
-		   
-		   modelview = viewmat * sclaeMat * rotateMat 
-		                         ^---model matrix---^
-		*/
-		float modelview[16];
-		mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, rotateMat, NULL);
-
+		  float transMat[16];
+		  mat4f_translate_new(transMat, -30+-5*sin(glfwGetTime()),
+				      8*(sin(glfwGetTime())+1)/2, 20+-5*sin(glfwGetTime()));
+		  //mat4f_mult_mat4f_many(viewMat, viewMat, transMat, NULL);
+		  /* Calculate an angle to rotate the object. glfwGetTime() gets
+		   * the time in seconds since GLFW was initialized. Rotates 45 degrees every second. */
+		  float angle = fmod(glfwGetTime()*45, 360);
+		  
+		  /* Make sure all computers/processes use the same angle */
+		  dgr_setget("angle", &angle, sizeof(GLfloat));
+		  
+		  /* Create a 4x4 rotation matrix based on the angle we computed. */
+		  mat4f_rotateAxis_new(rotateMat, angle, 0,1,0);
+		  mat4f_mult_mat4f_many(viewMat, viewMat, rotateMat, transMat, NULL);
+		  /* Create a scale matrix. */
+		  mat4f_scale_new(scaleMat, 3, 3, -3);
+		  
+		  
+		  /* Last parameter must be NULL, otherwise your program
+		     can/will crash. The modelview matrix is (the view matrix) *
+		     (the model matrix). Here, we have two matrices in the model
+		     matrix, and multiply everything together at once into the
+		     modelview matrix.
+		     
+		     modelview = viewmat * sclaeMat * rotateMat 
+		     ^---model matrix---^
+		  */
+		  mat4f_mult_mat4f_many(modelview, viewMat, scaleMat, NULL);
+		}
+		
+		
 		/* Tell OpenGL which GLSL program the subsequent
 		 * glUniformMatrix4fv() calls are for. */
 		kuhl_errorcheck();
@@ -346,7 +392,7 @@ int main(int argc, char** argv)
 	glUseProgram(program);
 	kuhl_errorcheck();
 	/* Set the uniform variable in the shader that is named "red" to the value 1. */
-	//glUniform1i(kuhl_get_uniform("red"), red);
+	glUniform1i(kuhl_get_uniform("red"), normals);
 	kuhl_errorcheck();
 	/* Good practice: Unbind objects until we really need them. */
 	glUseProgram(0);

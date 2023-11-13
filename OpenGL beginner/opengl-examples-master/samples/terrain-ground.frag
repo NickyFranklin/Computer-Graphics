@@ -6,7 +6,6 @@ in vec4 out_Position_CC;  // Fragment position (in cam coords)
 in vec3 out_Normal_CC; // normal vector     (in cam coords)
 in vec2 out_TexCoord;
 
-
 uniform int red;
 uniform sampler2D tex2;
 
@@ -37,7 +36,7 @@ void main()
 
 	float diffuse = diffuseScalar(out_Normal_CC, lightDir, true);
 	
-	if(true) {
+	if(red < 1) {
 		 fragColor = texture(tex2, out_TexCoord) * diffuse;
 	}
 

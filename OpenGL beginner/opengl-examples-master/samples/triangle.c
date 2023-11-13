@@ -22,6 +22,7 @@ static kuhl_geometry triangle;
 static kuhl_geometry quad;
 
 static int isRotating=1;
+int red = 0;
 
 /* Called by GLFW whenever a key is pressed. */
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -47,6 +48,9 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		printf("toggling rotation\n");
 		isRotating = !isRotating;
+		glUseProgram(program);
+		glUniform1i(kuhl_get_uniform("red"), isRotating);
+		glUseProgram(0);
 	}
 	if(key == GLFW_KEY_H)
 		printf("hello world\n");
@@ -69,7 +73,6 @@ void display()
 		viewmat_get_viewport(viewport, viewportID);
 		/* Tell OpenGL the area of the window that we will be drawing in. */
 		glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
-		glUniform1i(kuhl_get_uniform("red"), isRotating);
 		/* Clear the current viewport. Without glScissor(), glClear()
 		 * clears the entire screen. We could call glClear() before
 		 * this viewport loop---but in order for all variations of
@@ -221,7 +224,7 @@ int main(int argc, char** argv)
 	glUseProgram(program);
 	kuhl_errorcheck();
 	/* Set the uniform variable in the shader that is named "red" to the value 1. */
-	glUniform1i(kuhl_get_uniform("red"), isRotating);
+	glUniform1i(kuhl_get_uniform("red"), red);
 	kuhl_errorcheck();
 	/* Good practice: Unbind objects until we really need them. */
 	glUseProgram(0);
